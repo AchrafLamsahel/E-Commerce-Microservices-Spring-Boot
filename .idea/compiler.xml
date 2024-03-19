@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="paiment-microservice" />
+        <module name="eureka-microservice" />
+        <module name="Ecommerce-Microservices" />
+        <module name="order-microservice" />
+        <module name="config-microservice" />
+        <module name="security-microservice" />
+        <module name="gateway-microservice" />
+        <module name="user-microservice" />
+        <module name="catalogue-microservice" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="catalogue-microservice" options="-parameters" />
+      <module name="config-microservice" options="-parameters" />
+      <module name="eureka-microservice" options="-parameters" />
+      <module name="gateway-microservice" options="-parameters" />
+      <module name="order-microservice" options="-parameters" />
+      <module name="paiment-microservice" options="-parameters" />
+      <module name="security-microservice" options="-parameters" />
+      <module name="user-microservice" options="-parameters" />
+    </option>
+  </component>
+</project>
