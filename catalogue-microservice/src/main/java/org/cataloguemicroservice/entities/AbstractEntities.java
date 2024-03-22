@@ -1,18 +1,15 @@
 package org.cataloguemicroservice.entities;
 
-import jakarta.persistence.Column;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import java.time.Instant;
+import java.time.LocalDate;
+
 @Data
-public abstract class  AbstractEntities {
-
+public abstract class AbstractEntities {
     @CreatedDate
-    @Column(name = "created_at")
-    private Instant createdAt;
-
+    private LocalDate createdAt;
     @LastModifiedDate
-    @Column(name = "updated_at")
-    private Instant updatedAt;
+    private LocalDate updatedAt;
 }
