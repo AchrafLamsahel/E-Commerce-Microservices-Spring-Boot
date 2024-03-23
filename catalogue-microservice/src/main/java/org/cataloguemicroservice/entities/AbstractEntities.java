@@ -7,9 +7,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 @Data
-public abstract class AbstractEntities {
-    @CreatedDate
+public class AbstractEntities {
     private LocalDate createdAt;
-    @LastModifiedDate
     private LocalDate updatedAt;
 }

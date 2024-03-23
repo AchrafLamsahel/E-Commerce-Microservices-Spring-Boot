@@ -1,7 +1,6 @@
 package org.cataloguemicroservice.services;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.cataloguemicroservice.dtos.CategoryDTO;
 import org.cataloguemicroservice.entities.Category;
@@ -18,7 +17,7 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public CategoryDTO save(Category p) {
-        p.setSlug(this.createSlug(p.getLabel()));
-        return categoryMapper.categoryToCategoryDTO(categoryRepository.save(p));
+        p.setSlug(this.slugify(p.getLabel()));
+        return categoryMapper.toDto(categoryRepository.save(p));
     }
 }
