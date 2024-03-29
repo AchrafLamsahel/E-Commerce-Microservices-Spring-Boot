@@ -14,5 +14,6 @@ public class ProductDTO {
     private String slug;
     private String productTitle;
     private String imageUrl;
-    private List<Integer> idCategories;
+    private Integer idCategory;
+    private boolean valid;
 }

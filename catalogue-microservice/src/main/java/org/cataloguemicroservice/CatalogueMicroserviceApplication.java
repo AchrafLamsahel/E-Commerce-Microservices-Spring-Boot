@@ -1,7 +1,9 @@
 package org.cataloguemicroservice;
 
 import lombok.AllArgsConstructor;
+import org.cataloguemicroservice.app.CategoryApp;
 import org.cataloguemicroservice.dtos.CategoryDTO;
+import org.cataloguemicroservice.dtos.CategoryPageDTO;
 import org.cataloguemicroservice.entities.Category;
 import org.cataloguemicroservice.entities.Product;
 import org.cataloguemicroservice.repositories.CategoryRepository;
@@ -19,26 +21,33 @@ import java.util.Random;
 @SpringBootApplication
 @AllArgsConstructor
 public class CatalogueMicroserviceApplication {
-    private final ICategoryService iCategoryService;
+    //private final ICategoryService iCategoryService;
+    private final CategoryApp categoryApp;
 
     public static void main(String[] args) {
         SpringApplication.run(CatalogueMicroserviceApplication.class, args);
     }
-    @Bean
-    CommandLineRunner commandLineRunner(CategoryRepository categoryRepository, ProductRepository productRepository){
-        return args -> {
 
-            Category electronics = new Category(119,0,"Eléctronics lîmsèahel", "", "Electronics", "ddwe");
-            Category clothing = new Category(201,0, "Clothiéng Achréaf", "", "Clothing","jhfkwe");
-            Product laptop = new Product(302, "Lap top", "lçptop", "Laptop", "fsdf",List.of(1,2,3));
-            Product shirt = new Product(453, "Shi rt", "shirt", "Shirt", "fsdf",List.of(1,2,3));
+
+    @Bean
+    CommandLineRunner commandLineRunner() {
+        return args -> {
+            /*
+            Category electronics = new Category(119L,0L,"Eléctronics lîmsèahel", "", "Electronics", "ddwe");
+            Category clothing = new Category(201L,0L, "Clothiéng Achréaf", "", "Clothing","jhfkwe");
+            Product laptop = new Product(302L, "Lap top", "lçptop", "Laptop", "fsdf",1L);
+            Product shirt = new Product(453L, "Shi rt", "shirt", "Shirt", "fsdf",1L);
             iCategoryService.save(electronics);
             iCategoryService.save(clothing);
 
             productRepository.save(laptop);
             productRepository.save(shirt);
+            */
+            //CategoryPageDTO c = categoryApp.getWithProducts("clothieng-achreaf");
+            categoryApp.getCategoryWithProductsRecursive();
 
         };
     }
+
 
 }

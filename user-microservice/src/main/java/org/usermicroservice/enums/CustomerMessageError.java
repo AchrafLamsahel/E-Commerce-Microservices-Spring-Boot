@@ -29,7 +29,6 @@ public enum CustomerMessageError {
     EMAIL_IS_INVALID("Email is invalid, please check the format."),
     PHONE_NUMBER_NOT_VALID("Phone Number Not Valid");
 
-
     private final String msg;
     CustomerMessageError(String msg){
         this.msg = msg;

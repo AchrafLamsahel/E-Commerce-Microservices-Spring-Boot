@@ -3,10 +3,10 @@ package org.cataloguemicroservice.base;
 
 import java.text.Normalizer;
 
-public interface BaseSlugService<T, DTO> {
+public interface BaseSlugService<T> {
     static final int MAX_SLUG_LENGTH = 50;
 
-    DTO save(T p);
+    T save(T p);
 
     default String slugify(final String s) {
         final String intermediateResult = Normalizer
