@@ -12,7 +12,7 @@ public class ProductApp {
     private final ProductRepository productRepository;
 
     public List<Product> getAll() {
-        return null;
+        return productRepository.findAll();
     }
 
 

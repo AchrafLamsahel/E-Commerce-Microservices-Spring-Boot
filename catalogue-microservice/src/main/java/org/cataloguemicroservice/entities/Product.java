@@ -8,9 +8,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Document(collation = "product")
-@Data @Builder
+
+@Document
+@Getter @Setter @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Product extends AbstractEntities {

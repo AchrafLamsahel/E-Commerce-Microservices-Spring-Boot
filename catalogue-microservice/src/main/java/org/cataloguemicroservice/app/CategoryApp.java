@@ -10,6 +10,8 @@ import org.cataloguemicroservice.enums.CustomerMessageError;
 import org.cataloguemicroservice.exceptions.CategoryNotFoundException;
 import org.cataloguemicroservice.repositories.CategoryRepository;
 import org.cataloguemicroservice.repositories.ProductRepository;
+import org.cataloguemicroservice.services.ICategoryService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,21 +20,19 @@ import java.util.Optional;
 @Component
 @AllArgsConstructor
 public class CategoryApp {
+    @Qualifier("ICategoryService")
+    private final ICategoryService iCategoryService;
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
 
-    public ThreeCategory getHierarchyCategories(){
-        ThreeCategory threeCategory = new ThreeCategory();
-        List<Category> rootCategoryList = categoryRepository.findCategoriesByIdParent(0L);
-        for (Category cat : rootCategoryList) {
-            CategoriesTree categoriesTree = new CategoriesTree();
-            categoriesTree.setRootCategory(cat);
-            List<Category> subCategories = categoryRepository.findByIdParent(cat.getCategoryId());
-            categoriesTree.setChildren(subCategories);
-            threeCategory.getCategoriesTrees().add(categoriesTree);
-        }
-        return threeCategory;
-    }
+
+   public ThreeCategory getIndex(){
+       ThreeCategory threeCategory = new ThreeCategory();
+       threeCategory.setCategoriesTrees(iCategoryService.getHierarchyCategories().getCategoriesTrees());
+       List<Product> productList = productRepository.findAll();
+       threeCategory.setAllProducts(productList);
+       return threeCategory;
+   }
 
     public CategoryPageDTO getWithProducts(String slug) {
         CategoryPageDTO categoryPageDTO = new CategoryPageDTO();

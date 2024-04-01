@@ -8,15 +8,19 @@ import org.cataloguemicroservice.exceptions.ProductNotFoundException;
 import org.cataloguemicroservice.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @AllArgsConstructor
 public class ProductService implements IProductService{
     private final ProductRepository productRepository;
     @Override
-    public Product save(Product p) {
-        p.setSlug(this.slugify(p.getLabel()));
-        return productRepository.save(p);
+    public Product save(Product product) {
+        product.setSlug(this.slugify(product.getLabel()));
+        product.setCreatedDate(new Date());
+        return productRepository.save(product);
     }
 
     @Override

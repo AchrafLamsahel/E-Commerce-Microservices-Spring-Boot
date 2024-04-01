@@ -1,15 +1,22 @@
 package org.cataloguemicroservice.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.joda.time.DateTime;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.UUID;
 
-@Data
-public class AbstractEntities {
+@Data @AllArgsConstructor @NoArgsConstructor
+public abstract class AbstractEntities {
+
     @CreatedDate
-    private DateTime createdOn;
+    private Date createdDate;
 
     @LastModifiedDate
-    private DateTime updatedOn;
+    private LocalDateTime lastModifiedDate;
 }

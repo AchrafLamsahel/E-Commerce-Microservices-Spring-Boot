@@ -76,7 +76,9 @@ public class UserService implements IUserService {
                 .build();
         UserMapper.userToDto(userRepository.save(toSave));
         log.info("User with email {} saved successfully", toSave.getEmail());
-        //iMailService.sendMail(user.getEmail(), CustumerEmailMessage.PROFILE_SAVED_SUCCESSFULLY.getMessage(), CustumerEmailMessage.PROFILE_SAVED_SUCCESSFULLY.getMessage());
+        iMailService.sendMail(user.getEmail(),
+                CustumerEmailMessage.PROFILE_SAVED_SUCCESSFULLY.getMessage(),
+                "hey Naima how are You ......");
     }
 
     @Override

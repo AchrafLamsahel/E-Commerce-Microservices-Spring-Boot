@@ -15,8 +15,8 @@ public class MailService implements IMailService {
     @Override
     public void sendMail(String toEmail, String subject, String body) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-         simpleMailMessage.setFrom("ecommercemicroservice2024@gmail.com");
-         simpleMailMessage.setTo(toEmail);
+        simpleMailMessage.setFrom("ecommercemicroservice2024@gmail.com");
+        simpleMailMessage.setTo(toEmail);
          simpleMailMessage.setText(body);
          simpleMailMessage.setSubject(subject);
          javaMailSender.send(simpleMailMessage);

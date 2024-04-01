@@ -11,12 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface CategoryRepository  extends BaseRepositories<Category,Long> {
-    List<Category> findCategoryByIdParent(Long idParent);
-
-    List<Category> findCategoryByCategoryId(Long id);
-    List<Category> findByValidIsTrueAndIdParentEquals(Long idParent);
-    List<Category> findCategoriesByCategoryIdIsNull();
     List<Category> findCategoriesByIdParent(Long id);
-    List<Category> findByIdParentIsNull();
     List<Category> findByIdParent(Long id);
 }
