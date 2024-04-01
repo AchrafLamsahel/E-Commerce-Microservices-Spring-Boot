@@ -44,7 +44,7 @@ public class CatalogueMicroserviceApplication {
             productRepository.save(shirt);
             */
             //CategoryPageDTO c = categoryApp.getWithProducts("clothieng-achreaf");
-            categoryApp.getCategoryWithProductsRecursive();
+            categoryApp.getHierarchyCategories();
 
         };
     }

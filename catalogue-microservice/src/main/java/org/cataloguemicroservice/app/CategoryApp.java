@@ -1,10 +1,9 @@
 package org.cataloguemicroservice.app;
 
 import lombok.AllArgsConstructor;
-import org.cataloguemicroservice.dtos.CategoriesTree;
+import org.cataloguemicroservice.dtos.dto.CategoriesTree;
 import org.cataloguemicroservice.dtos.CategoryPageDTO;
-import org.cataloguemicroservice.dtos.ThreeCategory;
-
+import org.cataloguemicroservice.dtos.dto.ThreeCategory;
 import org.cataloguemicroservice.entities.Category;
 import org.cataloguemicroservice.entities.Product;
 import org.cataloguemicroservice.enums.CustomerMessageError;
@@ -12,7 +11,6 @@ import org.cataloguemicroservice.exceptions.CategoryNotFoundException;
 import org.cataloguemicroservice.repositories.CategoryRepository;
 import org.cataloguemicroservice.repositories.ProductRepository;
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +20,19 @@ import java.util.Optional;
 public class CategoryApp {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
+
+    public ThreeCategory getHierarchyCategories(){
+        ThreeCategory threeCategory = new ThreeCategory();
+        List<Category> rootCategoryList = categoryRepository.findCategoriesByIdParent(0L);
+        for (Category cat : rootCategoryList) {
+            CategoriesTree categoriesTree = new CategoriesTree();
+            categoriesTree.setRootCategory(cat);
+            List<Category> subCategories = categoryRepository.findByIdParent(cat.getCategoryId());
+            categoriesTree.setChildren(subCategories);
+            threeCategory.getCategoriesTrees().add(categoriesTree);
+        }
+        return threeCategory;
+    }
 
     public CategoryPageDTO getWithProducts(String slug) {
         CategoryPageDTO categoryPageDTO = new CategoryPageDTO();
@@ -52,10 +63,13 @@ public class CategoryApp {
             }
             List<CategoriesTree> categoriesTrees =new ArrayList<>();
             categoriesTrees.add(categoriesThree);
-            threeList.addCategoriesTree(categoriesThree);
+           // threeList.addCategoriesTree(categoriesThree);
         }
         return threeList;
     }
+
+
+
 
 
 }

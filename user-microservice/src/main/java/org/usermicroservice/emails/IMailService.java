@@ -1,5 +1,5 @@
 package org.usermicroservice.emails;
 
 public interface IMailService {
-    void sendForRegister(String to, String subject, String body);
+    void sendMail(String toEmail, String subject, String body);
 }

@@ -1,17 +1,15 @@
 package org.usermicroservice.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.usermicroservice.enums.Active;
 import org.usermicroservice.enums.Role;
 import java.time.LocalDateTime;
-@Entity @AllArgsConstructor @NoArgsConstructor
-@Data @Builder
+@AllArgsConstructor @NoArgsConstructor @Getter @Setter @Builder
+@Entity
+@Table(name = "\"user\"")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
