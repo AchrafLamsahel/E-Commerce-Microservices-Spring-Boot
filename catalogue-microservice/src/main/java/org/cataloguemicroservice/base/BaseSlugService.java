@@ -1,6 +1,5 @@
 package org.cataloguemicroservice.base;
 
-
 import java.text.Normalizer;
 
 public interface BaseSlugService<T> {

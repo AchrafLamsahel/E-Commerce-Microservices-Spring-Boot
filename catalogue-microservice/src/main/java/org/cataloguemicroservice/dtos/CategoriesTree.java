@@ -1,12 +1,10 @@
-package org.cataloguemicroservice.dtos.dto;
+package org.cataloguemicroservice.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.cataloguemicroservice.entities.Category;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter

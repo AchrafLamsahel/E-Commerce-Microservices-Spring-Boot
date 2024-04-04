@@ -2,16 +2,19 @@ package org.cataloguemicroservice.services;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.cataloguemicroservice.dtos.CategoryDTO;
-import org.cataloguemicroservice.dtos.dto.CategoriesTree;
-import org.cataloguemicroservice.dtos.dto.ThreeCategory;
+import org.cataloguemicroservice.dtos.CategoriesTree;
+import org.cataloguemicroservice.dtos.ThreeCategory;
 import org.cataloguemicroservice.entities.Category;
+import org.cataloguemicroservice.entities.Product;
 import org.cataloguemicroservice.enums.CustomerMessageError;
 import org.cataloguemicroservice.exceptions.CategoryNotFoundException;
-import org.cataloguemicroservice.mappers.CategoryMapper;
 import org.cataloguemicroservice.repositories.CategoryRepository;
+import org.cataloguemicroservice.repositories.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-
 import java.util.Date;
 import java.util.List;
 
@@ -20,7 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CategoryService implements ICategoryService {
     private final CategoryRepository categoryRepository;
-    private final CategoryMapper categoryMapper;
+    private final ProductRepository productRepository;
 
     @Override
     public Category save(Category category) {
@@ -84,5 +87,19 @@ public class CategoryService implements ICategoryService {
         }
         return threeCategory;
     }
+
+    @Override
+    public Page<Product> getCategoryPagination(Integer pageNumber, Integer pageSize, String sort) {
+        Pageable pageable = null;
+        if (sort != null) {
+            // with sorting
+            pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.ASC, sort);
+        } else {
+            pageable = PageRequest.of(pageNumber, pageSize);
+        }
+        return productRepository.findAll(pageable);
+    }
+
+
 
 }

@@ -1,7 +1,5 @@
 package org.cataloguemicroservice.base;
 
-import org.mapstruct.Mapper;
-
 import java.util.List;
 public interface BaseMapper<E,D> {
     E toEntity(D dto);

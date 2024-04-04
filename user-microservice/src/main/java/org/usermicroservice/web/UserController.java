@@ -6,32 +6,25 @@ import org.springframework.web.bind.annotation.*;
 import org.usermicroservice.dtos.UserDTO;
 import org.usermicroservice.entities.User;
 import org.usermicroservice.services.IUserService;
-import java.util.Collection;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
 public class UserController {
     private final IUserService iUserService;
-
     @GetMapping("/")
-    public Collection<UserDTO> getAllUsers() {
-        return iUserService.getAllUsers();
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        return ResponseEntity.ok(iUserService.getAllUsers());
     }
 
     @GetMapping("/Active")
-    public Collection<UserDTO> getAllUsersActive() {
-        return iUserService.getAllUsersActive();
-    }
+    public ResponseEntity<List<UserDTO>> getAllUsersActive() {return ResponseEntity.ok(iUserService.getAllUsersActive());}
 
     @GetMapping("/InActive")
-    public Collection<UserDTO> getAllUsersInActive() {
-        return iUserService.getAllUserInActive();
-    }
+    public ResponseEntity<List<UserDTO>> getAllUsersInActive() {return ResponseEntity.ok(iUserService.getAllUserInActive());}
 
     @GetMapping("/{id}")
-    public UserDTO getUserById(@PathVariable Long id) {
-        return iUserService.getUserById(id);
-    }
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {return ResponseEntity.ok(iUserService.getUserById(id));}
 
     @PostMapping("/register")
     public void createUser(@RequestBody User user) {
@@ -39,13 +32,14 @@ public class UserController {
     }
 
     @GetMapping("/getUserByEmail/{email}")
-    public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
-        return ResponseEntity.ok(iUserService.getUserByEmail(email));
-    }
+    public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {return ResponseEntity.ok(iUserService.getUserByEmail(email));}
 
     @DeleteMapping("/{id}")
     public void deleteUserById(@PathVariable Long id) {
         iUserService.deleteUserById(id);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody User user) {return ResponseEntity.ok(iUserService.updateUser(id, user));}
 
 }

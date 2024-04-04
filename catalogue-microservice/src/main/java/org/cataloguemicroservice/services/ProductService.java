@@ -6,11 +6,13 @@ import org.cataloguemicroservice.enums.CustomerMessageError;
 import org.cataloguemicroservice.exceptions.CategoryNotFoundException;
 import org.cataloguemicroservice.exceptions.ProductNotFoundException;
 import org.cataloguemicroservice.repositories.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -51,5 +53,16 @@ public class ProductService implements IProductService{
                 .orElseThrow(() -> new
                         CategoryNotFoundException(
                                 CustomerMessageError.CATEGORY_NOT_FOUND_WITH_LABEL_EQUALS.getMessage()+label));
+    }
+
+    @Override
+    public Page<Product> getProductPagination(Integer pageNumber, Integer pageSize, String sort) {
+        Pageable pageable = null;
+        if (sort != null) {
+            pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.ASC, sort);
+        } else {
+            pageable = PageRequest.of(pageNumber, pageSize);
+        }
+        return productRepository.findAll(pageable);
     }
 }

@@ -15,7 +15,6 @@ import org.usermicroservice.exceptions.UserNotFoundException;
 import org.usermicroservice.mappers.UserMapper;
 import org.usermicroservice.repositories.UserRepository;
 import org.usermicroservice.utils.InputValidatorRegister;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -104,13 +103,25 @@ public class UserService implements IUserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(
                         CustomerMessageError.USER_NOT_FOUND_WITH_ID_EQUALS.getMessage() + id));
+        //user.setEmail("###" + user.getEmail());
         user.setIsActive(Active.INACTIVE);
         userRepository.save(user);
     }
 
     @Override
     public UserDTO updateUser(Long id, User user) {
-        return null;
+        log.info("Updating user with id: {}", id);
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(
+                        CustomerMessageError.USER_NOT_FOUND_WITH_ID_EQUALS.getMessage() + id));
+        existingUser.setFirstname(user.getFirstname());
+        existingUser.setLastname(user.getLastname());
+        existingUser.setNumberPhone(user.getNumberPhone());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setPassword(user.getPassword());
+        User updatedUser = userRepository.save(existingUser);
+        log.info("User with id {} updated successfully", id);
+        return UserMapper.userToDto(updatedUser);
     }
 
 

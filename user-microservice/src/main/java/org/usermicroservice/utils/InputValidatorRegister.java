@@ -2,7 +2,6 @@ package org.usermicroservice.utils;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
 import org.usermicroservice.repositories.UserRepository;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

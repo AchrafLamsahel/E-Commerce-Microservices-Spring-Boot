@@ -13,7 +13,8 @@ import java.util.List;
 @Getter
 @Setter
 public class CategoryPageDTO {
-    private Category category;
+    private Category rootCategory;
+    private Category subCategory;
     private List<Category> subCategories;
     private List<Product> products;
     private List<BreadcrumbDTO> breadcrumbDTO;

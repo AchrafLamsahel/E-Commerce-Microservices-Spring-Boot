@@ -7,7 +7,6 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="paiment-microservice" />
         <module name="eureka-microservice" />
         <module name="Ecommerce-Microservices" />
         <module name="order-microservice" />
@@ -15,6 +14,7 @@
         <module name="security-microservice" />
         <module name="gateway-microservice" />
         <module name="user-microservice" />
+        <module name="payment-microservice" />
       </profile>
       <profile name="Annotation profile for catalogue-microservice" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -37,7 +37,7 @@
       <module name="eureka-microservice" options="-parameters" />
       <module name="gateway-microservice" options="-parameters" />
       <module name="order-microservice" options="-parameters" />
-      <module name="paiment-microservice" options="-parameters" />
+      <module name="payment-microservice" options="-parameters" />
       <module name="security-microservice" options="-parameters" />
       <module name="user-microservice" options="-parameters" />
     </option>

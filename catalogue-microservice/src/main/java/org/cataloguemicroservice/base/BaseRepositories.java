@@ -2,8 +2,6 @@ package org.cataloguemicroservice.base;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.NoRepositoryBean;
-import reactor.core.publisher.Flux;
-
 import java.util.List;
 import java.util.Optional;
 
