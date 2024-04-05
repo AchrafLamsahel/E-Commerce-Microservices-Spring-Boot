@@ -12,6 +12,7 @@ import org.cataloguemicroservice.services.ICategoryService;
 import org.cataloguemicroservice.services.IProductService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
 import java.util.List;
 
 @Component
@@ -29,28 +30,30 @@ public class CategoryApp {
         threeCategory.setCategoriesTrees(iCategoryService.getHierarchyCategories().getCategoriesTrees());
         //List<Product> productList = productRepository.findAll();
         //threeCategory.setAllProducts(productList);
-        threeCategory.setAllProductsPage(iCategoryService.getCategoryPagination(pageNumber,pageSize,sort));
+        threeCategory.setAllProductsPage(iCategoryService.getCategoryPagination(pageNumber, pageSize, sort));
         return threeCategory;
     }
 
     public CategoryPageDTO getCategorySlug(String slug) {
         CategoryPageDTO categoryPageDTO = new CategoryPageDTO();
         Category category = iCategoryService.getCategoryBySlug(slug);
-        if( category.getIdParent() == 0 ){
+        if (category.getIdParent() == 0) {
             List<Category> categoryList = categoryRepository.findCategoriesByIdParent(category.getCategoryId());
-            List<Product> productList =  iProductService.getProductById(category.getCategoryId());
+            List<Product> productList = iProductService.getProductById(category.getCategoryId());
             categoryPageDTO.setRootCategory(category);
             categoryPageDTO.setSubCategories(categoryList);
             categoryPageDTO.setProducts(productList);
-            BreadcrumbDTO breadcrumbDTO = new BreadcrumbDTO();
+            BreadcrumbDTO breadcrumbDTO = new BreadcrumbDTO("/" + category.getSlug(), category.getLabel());
+            categoryPageDTO.getBreadcrumbDTO().add(breadcrumbDTO);
             return categoryPageDTO;
         }
         Category rootCategory = iCategoryService.getCategoryById(category.getIdParent());
         categoryPageDTO.setRootCategory(rootCategory);
         categoryPageDTO.setSubCategory(category);
-        List<Product> productList =  iProductService.getProductById(category.getCategoryId());
+        List<Product> productList = iProductService.getProductById(category.getCategoryId());
         categoryPageDTO.setProducts(productList);
-        BreadcrumbDTO breadcrumbDTO = new BreadcrumbDTO();
+        BreadcrumbDTO breadcrumbDTO = new BreadcrumbDTO("/" + rootCategory.getSlug() + "/" + category.getSlug(), rootCategory.getLabel() + category.getLabel());
+        categoryPageDTO.getBreadcrumbDTO().add(breadcrumbDTO);
         return categoryPageDTO;
     }
 

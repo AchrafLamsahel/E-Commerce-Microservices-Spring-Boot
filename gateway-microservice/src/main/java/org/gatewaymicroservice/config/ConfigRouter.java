@@ -6,6 +6,8 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static org.gatewaymicroservice.constants.MSConstant.*;
+
 @Configuration
 @AllArgsConstructor
 public class ConfigRouter {
@@ -13,19 +15,24 @@ public class ConfigRouter {
     public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
 
-                .route("user-microservice", r -> r.path("/users/**")
+                .route(USER_MICROSERVICE, r -> r.path("/users/**")
+
                         .uri("lb://user-microservice"))
 
-                .route("catalogue-microservice", r -> r.path("/products/**")
+                .route(CATALOGUE_MICROSERVICE, r -> r.path("/products/**")
+
                         .uri("lb://catalogue-microservice"))
 
-                .route("payment-microservice", r -> r.path("/users/**")
+                .route(PAYMENT_MICROSERVICE, r -> r.path("/users/**")
+
                         .uri("lb://payment-microservice"))
 
-                .route("order-microservice", r -> r.path("/order/**")
+                .route(ORDER_MICROSERVICE, r -> r.path("/order/**")
+
                         .uri("lb://order-microservice"))
 
-                .route("security-microservice", r -> r.path("/auth/**")
+                .route(AUTH_MICROSERVICE, r -> r.path("/auth/**")
+
                         .uri("lb://security-microservice"))
 
                 .build();

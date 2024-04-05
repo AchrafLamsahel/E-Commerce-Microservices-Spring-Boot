@@ -73,7 +73,7 @@ public class CatalogueMicroserviceApplication {
             iCategoryService.save(category5);
             iCategoryService.save(category6);
 
-            productRepository.findAll().forEach(System.out::println);
+
 
         };
     }

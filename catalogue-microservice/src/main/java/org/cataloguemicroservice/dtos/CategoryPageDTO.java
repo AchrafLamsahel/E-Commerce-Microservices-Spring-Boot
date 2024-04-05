@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.cataloguemicroservice.entities.Category;
 import org.cataloguemicroservice.entities.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,5 +18,5 @@ public class CategoryPageDTO {
     private Category subCategory;
     private List<Category> subCategories;
     private List<Product> products;
-    private List<BreadcrumbDTO> breadcrumbDTO;
+    private List<BreadcrumbDTO> breadcrumbDTO = new ArrayList<>();
 }
