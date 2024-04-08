@@ -1,5 +1,6 @@
 package org.authmicroservice.exceptions.exceptionHandler;
 
+import org.authmicroservice.exceptions.DataNotValidException;
 import org.authmicroservice.exceptions.EmailOrPasswordIncorrectException;
 import org.authmicroservice.exceptions.GenericErrorResponse;
 import org.authmicroservice.exceptions.ValidationException;
@@ -33,6 +34,13 @@ public class GeneralExceptionHandler  extends ResponseEntityExceptionHandler {
         Map<String, String> errors = new HashMap<>();
         errors.put("error", exception.getMessage());
         return new ResponseEntity<>(errors, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(DataNotValidException.class)
+    public ResponseEntity<?> dataValidator(DataNotValidException exception) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", exception.getMessage());
+        return new ResponseEntity<>(errors, HttpStatus.NOT_ACCEPTABLE);
     }
 
     @ExceptionHandler(ValidationException.class)

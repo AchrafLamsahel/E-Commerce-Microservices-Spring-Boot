@@ -18,4 +18,7 @@ public interface UserServiceClient {
     @GetMapping("/users/username={username}")
     ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username);
 
+    @GetMapping("/existsByEmail/{email}")
+    boolean existsByEmail(@PathVariable String email);
+
 }

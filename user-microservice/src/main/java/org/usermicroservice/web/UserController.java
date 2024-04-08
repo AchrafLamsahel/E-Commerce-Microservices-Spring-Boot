@@ -39,7 +39,16 @@ public class UserController {
         iUserService.deleteUserById(id);
     }
 
+    @GetMapping("/existsByEmail/{email}")
+    public boolean existsByEmail(@PathVariable String email) {
+        return iUserService.existsByEmail(email);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody User user) {return ResponseEntity.ok(iUserService.updateUser(id, user));}
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody User user) {return ResponseEntity.ok(iUserService.updateUser(id, user));
+
+    }
+
+
 
 }

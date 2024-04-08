@@ -28,8 +28,6 @@ public class CategoryApp {
     public ThreeCategory getIndex(Integer pageNumber, Integer pageSize, String sort) {
         ThreeCategory threeCategory = new ThreeCategory();
         threeCategory.setCategoriesTrees(iCategoryService.getHierarchyCategories().getCategoriesTrees());
-        //List<Product> productList = productRepository.findAll();
-        //threeCategory.setAllProducts(productList);
         threeCategory.setAllProductsPage(iCategoryService.getCategoryPagination(pageNumber, pageSize, sort));
         return threeCategory;
     }

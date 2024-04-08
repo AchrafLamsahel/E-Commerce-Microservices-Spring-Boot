@@ -52,6 +52,7 @@ public class UserService implements IUserService {
     @Override
     public void registerUser(User user) {
         log.info("Creating new user with email : {}", user.getEmail());
+        /**
         if (InputValidatorRegister.isValidPassword(user.getPassword()))
             throw new DataNotValidException(CustomerMessageError.PASSWORD_LENGTH_ERROR.getMessage());
         if (!InputValidatorRegister.isValidMoroccanPhoneNumber(user.getNumberPhone()))
@@ -64,6 +65,7 @@ public class UserService implements IUserService {
             throw new DataNotValidException(CustomerMessageError.LASTNAME_IS_REQUIRED.getMessage());
         if (inputValidatorRegister.isEmailAlreadyExist(user.getEmail()))
             throw new DataNotValidException(CustomerMessageError.EMAIL_ALREADY_EXIST.getMessage());
+         */
         User toSave = User.builder()
                 .firstname(user.getFirstname())
                 .lastname(user.getLastname())
@@ -75,9 +77,9 @@ public class UserService implements IUserService {
                 .build();
         UserMapper.userToDto(userRepository.save(toSave));
         log.info("User with email {} saved successfully", toSave.getEmail());
-        iMailService.sendMail(user.getEmail(),
-                CustumerEmailMessage.PROFILE_SAVED_SUCCESSFULLY.getMessage(),
-                "hey Naima how are You ......");
+        //iMailService.sendMail(user.getEmail(),
+        //        CustumerEmailMessage.PROFILE_SAVED_SUCCESSFULLY.getMessage(),
+         //       "Test Message ----> ******");
     }
 
     @Override
@@ -122,6 +124,11 @@ public class UserService implements IUserService {
         User updatedUser = userRepository.save(existingUser);
         log.info("User with id {} updated successfully", id);
         return UserMapper.userToDto(updatedUser);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 
 

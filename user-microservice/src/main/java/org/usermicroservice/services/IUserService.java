@@ -13,4 +13,5 @@ public interface IUserService {
     UserDTO getUserByEmail(String email);
     void deleteUserById(Long id);
     UserDTO updateUser(Long id,User user);
+    boolean existsByEmail(String email);
 }
