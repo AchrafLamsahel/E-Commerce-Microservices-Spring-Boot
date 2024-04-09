@@ -1,5 +1,6 @@
 package org.usermicroservice.web;
 
+import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +28,7 @@ public class UserController {
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {return ResponseEntity.ok(iUserService.getUserById(id));}
 
     @PostMapping("/register")
-    public void createUser(@RequestBody User user) {
-        iUserService.registerUser(user);
-    }
+    public void createUser(@RequestBody User user) throws MessagingException {iUserService.registerUser(user);}
 
     @GetMapping("/getUserByEmail/{email}")
     public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {return ResponseEntity.ok(iUserService.getUserByEmail(email));}

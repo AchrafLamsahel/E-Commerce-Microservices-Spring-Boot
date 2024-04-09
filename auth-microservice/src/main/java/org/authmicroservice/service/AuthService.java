@@ -8,6 +8,7 @@ import org.authmicroservice.enums.CustomerMessageValidator;
 import org.authmicroservice.exceptions.DataNotValidException;
 import org.authmicroservice.exceptions.EmailOrPasswordIncorrectException;
 import org.authmicroservice.utils.InputValidatorRegister;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,8 +27,9 @@ public class AuthService implements IAuthService {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication.isAuthenticated()) {
                 return LoginResponseDTO.builder()
+                        .email(userDTO.getEmail())
                         .accessToken(jwtService.generateToken(request.getEmail()))
-                        .refreshToken(jwtService.generateRefreshToken(request.getEmail()))
+                        .refreshToken(jwtService.generateToken(request.getEmail()))
                         .build();
             } else {
                 throw new EmailOrPasswordIncorrectException("Wrong credentials");
@@ -56,6 +58,11 @@ public class AuthService implements IAuthService {
                 .message(CustomerMessageValidator.SAVED_SUCCESSFULLY.getMessage()+" "
                         + CustomerMessageValidator.CHECK_EMAIL_FOR_VALIDATION.getMessage())
                 .build();
+    }
+
+    @Override
+    public ResponseEntity<?> confirmEmail(String confirmationToken) {
+        return userServiceClient.confirmUserAccount(confirmationToken);
     }
 
 }

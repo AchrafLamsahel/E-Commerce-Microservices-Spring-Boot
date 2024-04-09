@@ -44,24 +44,9 @@ public class JwtService implements IJwtService {
                 .compact();
     }
 
-    public String generateRefreshToken(String email) {
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
-        Map<String, Object> claims = new HashMap<>();
-        return createRefreshToken(claims, userDetails);
-    }
 
-    private String createRefreshToken(Map<String, Object> claims, UserDetails userDetails) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + REFRESH_TOKEN_EXPIRATION_MS);
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(userDetails.getUsername())
-                .setIssuer(userDetails.getAuthorities().iterator().next().getAuthority())
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(getSignKey(), SignatureAlgorithm.HS256)
-                .compact();
-    }
+
+
 
     public Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);

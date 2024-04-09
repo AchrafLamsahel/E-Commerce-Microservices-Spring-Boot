@@ -5,10 +5,8 @@ import org.authmicroservice.dto.RegisterResponseDTO;
 import org.authmicroservice.dto.UserDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
+
 @FeignClient(name = "user-microservice")
 public interface UserServiceClient {
 
@@ -20,5 +18,8 @@ public interface UserServiceClient {
 
     @GetMapping("/users/existsByEmail/{email}")
     boolean existsByEmail(@PathVariable String email);
+
+    @GetMapping("/users/confirm-account")
+    ResponseEntity<?> confirmUserAccount(@RequestParam("token") String confirmationToken);
 
 }

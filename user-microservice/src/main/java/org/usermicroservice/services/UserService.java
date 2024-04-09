@@ -1,5 +1,6 @@
 package org.usermicroservice.services;
 
+import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,7 @@ import org.usermicroservice.repositories.UserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Service
 @Slf4j
 @AllArgsConstructor
@@ -29,7 +31,6 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final ConfirmationTokenRepository confirmationTokenRepository;
     private final IMailService iMailService;
-    private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
     @Value("${spring.mail.email}")
     private static  String email;
@@ -58,7 +59,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void registerUser(User user) {
+    public void registerUser(User user) throws MessagingException {
         log.info("Creating new user with email : {}", user.getEmail());
         User toSave = User.builder()
                 .firstname(user.getFirstname())
@@ -73,15 +74,7 @@ public class UserService implements IUserService {
         //UserMapper.userToDto(userRepository.save(toSave));
         ConfirmationToken confirmationToken = new ConfirmationToken(toSave);
         confirmationTokenRepository.save(confirmationToken);
-        /**
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setFrom(email);
-        mailMessage.setTo(user.getEmail());
-        mailMessage.setSubject("Complete Registration!");
-        mailMessage.setText("To confirm your account, please click here : "
-                + "http://localhost:8081/confirm-account?token=" + confirmationToken.getConfirmationToken());
-        mailService.sendEmail(mailMessage);
-         */
+        iMailService.sendConfirmationEmail(confirmationToken,"ecommercemicroservice2024@gmail.com");
         System.out.println("Confirmation Token: " + confirmationToken.getConfirmationToken());
         ResponseEntity.ok("Verify email by the link sent on your email address");
     }

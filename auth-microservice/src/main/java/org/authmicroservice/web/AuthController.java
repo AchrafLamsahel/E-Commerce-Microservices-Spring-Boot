@@ -16,18 +16,14 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request) {
-        return ResponseEntity.ok(authService.login(request));
-    }
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request) {return ResponseEntity.ok(authService.login(request));}
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponseDTO> register(@RequestBody RegisterRequestDTO request) {
-        return ResponseEntity.ok(authService.register(request));
-    }
+    public ResponseEntity<RegisterResponseDTO> register(@RequestBody RegisterRequestDTO request) {return ResponseEntity.ok(authService.register(request));}
 
     @GetMapping("/confirm-account")
-    public ResponseEntity<?> validationEmail() {
-        return null;
+    public ResponseEntity<?> validationEmail(@RequestParam("token") String confirmationToken) {
+        return authService.confirmEmail(confirmationToken);
     }
 
 }

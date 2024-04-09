@@ -1,5 +1,9 @@
 package org.usermicroservice.emails;
 
+import jakarta.mail.MessagingException;
+import org.usermicroservice.entities.ConfirmationToken;
+
 public interface IMailService {
-    void sendMail(String toEmail, String subject, String body);
+    void sendConfirmationEmail(ConfirmationToken confirmationToken,String senderEmail)
+            throws MessagingException;
 }
