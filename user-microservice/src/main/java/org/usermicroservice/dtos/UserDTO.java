@@ -13,6 +13,8 @@ public class UserDTO {
     private String lastname;
     private String email;
     private String numberPhone;
+    private String password;
     private Role role;
     private Active isActive;
+    private boolean isEnabled;
 }

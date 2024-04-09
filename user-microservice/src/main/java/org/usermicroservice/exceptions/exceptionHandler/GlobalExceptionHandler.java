@@ -10,11 +10,13 @@ import java.util.Collections;
 import java.util.Date;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(DataNotValidException.class)
     public ResponseEntity<?> handleAlreadyExistsException(DataNotValidException ex) {
         ErrorBody errorBody = new ErrorBody(new Date(), HttpStatus.NOT_ACCEPTABLE, Collections.singletonList(ex.getMessage()));
         return new ResponseEntity<>(errorBody, errorBody.getStatus());
     }
+
     @ExceptionHandler(EmailAlreadyExist.class)
     public ResponseEntity<?> handleUserNotFound(EmailAlreadyExist ex) {
         ErrorBody errorBody = new ErrorBody(new Date(), HttpStatus.NOT_FOUND, Collections.singletonList(ex.getMessage()));
@@ -26,6 +28,7 @@ public class GlobalExceptionHandler {
         ErrorBody errorBody = new ErrorBody(new Date(), HttpStatus.NOT_ACCEPTABLE, Collections.singletonList(ex.getMessage()));
         return new ResponseEntity<>(errorBody, errorBody.getStatus());
     }
+
     @ExceptionHandler(RoleNoteFoundException.class)
     public ResponseEntity<?> handleUserNotFound(RoleNoteFoundException ex) {
         ErrorBody errorBody = new ErrorBody(new Date(), HttpStatus.NOT_FOUND, Collections.singletonList(ex.getMessage()));

@@ -7,10 +7,7 @@ import org.authmicroservice.dto.RegisterRequestDTO;
 import org.authmicroservice.dto.RegisterResponseDTO;
 import org.authmicroservice.service.AuthService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -27,4 +24,10 @@ public class AuthController {
     public ResponseEntity<RegisterResponseDTO> register(@RequestBody RegisterRequestDTO request) {
         return ResponseEntity.ok(authService.register(request));
     }
+
+    @GetMapping("/confirm-account")
+    public ResponseEntity<?> validationEmail() {
+        return null;
+    }
+
 }

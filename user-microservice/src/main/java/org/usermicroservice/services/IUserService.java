@@ -1,5 +1,6 @@
 package org.usermicroservice.services;
 
+import org.springframework.http.ResponseEntity;
 import org.usermicroservice.dtos.UserDTO;
 import org.usermicroservice.entities.User;
 import java.util.List;
@@ -14,4 +15,5 @@ public interface IUserService {
     void deleteUserById(Long id);
     UserDTO updateUser(Long id,User user);
     boolean existsByEmail(String email);
+    ResponseEntity<?> confirmEmail(String confirmationToken);
 }

@@ -30,7 +30,7 @@ public class InputValidatorRegister {
         String regex = "^(?=.*[A-Z]).{8,}$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(password);
-        return matcher.matches();
+        return !matcher.matches();
     }
 
     public  boolean isEmailAlreadyExist(String email){

@@ -9,13 +9,13 @@ import org.usermicroservice.services.IUserService;
 import java.util.List;
 
 @RestController
+@RequestMapping("/users")
 @AllArgsConstructor
 public class UserController {
     private final IUserService iUserService;
+
     @GetMapping("/")
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        return ResponseEntity.ok(iUserService.getAllUsers());
-    }
+    public ResponseEntity<List<UserDTO>> getAllUsers() {return ResponseEntity.ok(iUserService.getAllUsers());}
 
     @GetMapping("/Active")
     public ResponseEntity<List<UserDTO>> getAllUsersActive() {return ResponseEntity.ok(iUserService.getAllUsersActive());}
@@ -40,15 +40,12 @@ public class UserController {
     }
 
     @GetMapping("/existsByEmail/{email}")
-    public boolean existsByEmail(@PathVariable String email) {
-        return iUserService.existsByEmail(email);
-    }
+    public boolean existsByEmail(@PathVariable String email) {return iUserService.existsByEmail(email);}
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody User user) {return ResponseEntity.ok(iUserService.updateUser(id, user));
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody User user) {return ResponseEntity.ok(iUserService.updateUser(id, user));}
 
-    }
-
-
+    @RequestMapping(value="/confirm-account", method= {RequestMethod.GET, RequestMethod.POST})
+    public ResponseEntity<?> confirmUserAccount(@RequestParam("token") String confirmationToken) {return iUserService.confirmEmail(confirmationToken);}
 
 }

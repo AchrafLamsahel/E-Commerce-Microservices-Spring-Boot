@@ -15,10 +15,10 @@ public interface UserServiceClient {
     @PostMapping("/users/register")
     ResponseEntity<RegisterResponseDTO> save(@RequestBody RegisterRequestDTO request);
 
-    @GetMapping("/users/username={username}")
-    ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username);
+    @GetMapping("/users/getUserByEmail/{email}")
+    ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email);
 
-    @GetMapping("/existsByEmail/{email}")
+    @GetMapping("/users/existsByEmail/{email}")
     boolean existsByEmail(@PathVariable String email);
 
 }

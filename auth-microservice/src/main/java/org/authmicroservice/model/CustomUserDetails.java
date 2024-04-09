@@ -16,7 +16,7 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Stream.of(user.getRole())
-                .map(x -> new SimpleGrantedAuthority("ROLE_"+x.name()))
+                .map(x -> new SimpleGrantedAuthority(x.name()))
                 .collect(Collectors.toList());
     }
 
@@ -47,7 +47,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.isEnabled();
     }
 }
 

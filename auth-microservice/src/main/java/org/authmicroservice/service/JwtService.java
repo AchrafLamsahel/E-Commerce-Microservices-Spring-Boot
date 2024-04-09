@@ -53,7 +53,6 @@ public class JwtService implements IJwtService {
     private String createRefreshToken(Map<String, Object> claims, UserDetails userDetails) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + REFRESH_TOKEN_EXPIRATION_MS);
-
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())

@@ -27,4 +27,5 @@ public class User {
     private Role role;
     @Enumerated(EnumType.STRING)
     private Active isActive;
+    private boolean isEnabled;
 }
