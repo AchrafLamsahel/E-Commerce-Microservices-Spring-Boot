@@ -27,7 +27,9 @@ public enum CustomerMessageError {
     PASSWORD_IS_REQUIRED("Password is required."),
     EMAIL_IS_REQUIRED("Email is required."),
     EMAIL_IS_INVALID("Email is invalid, please check the format."),
-    PHONE_NUMBER_NOT_VALID("Phone Number Not Valid");
+    PHONE_NUMBER_NOT_VALID("Phone Number Not Valid"),
+    INVALID_REQUEST("Invalid request."),
+    PASSWORDS_DO_NOT_MATCH("Passwords do not match.");
 
     private final String msg;
     CustomerMessageError(String msg){

@@ -3,37 +3,42 @@ package org.usermicroservice.services;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+import org.usermicroservice.dtos.ChangePasswordDTO;
 import org.usermicroservice.dtos.UserDTO;
 import org.usermicroservice.emails.IMailService;
-import org.usermicroservice.emails.MailService;
-import org.usermicroservice.entities.ConfirmationToken;
+import org.usermicroservice.entities.Role;
 import org.usermicroservice.entities.User;
 import org.usermicroservice.enums.Active;
+import org.usermicroservice.enums.CustomerEmailMessage;
 import org.usermicroservice.enums.CustomerMessageError;
-import org.usermicroservice.enums.Role;
+import org.usermicroservice.enums.ERole;
+import org.usermicroservice.exceptions.DataNotValidException;
 import org.usermicroservice.exceptions.UserNotFoundException;
 import org.usermicroservice.mappers.UserMapper;
-import org.usermicroservice.repositories.ConfirmationTokenRepository;
+import org.usermicroservice.repositories.RoleRepository;
 import org.usermicroservice.repositories.UserRepository;
-
+import org.usermicroservice.utils.TokenGenerator;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 @Service
 @Slf4j
 @AllArgsConstructor
+@Transactional
 public class UserService implements IUserService {
     private final UserRepository userRepository;
-    private final ConfirmationTokenRepository confirmationTokenRepository;
     private final IMailService iMailService;
     private final PasswordEncoder passwordEncoder;
-    @Value("${spring.mail.email}")
-    private static  String email;
+    private final RoleRepository roleRepository;
+
 
     @Override
     public List<UserDTO> getAllUsers() {
@@ -44,8 +49,7 @@ public class UserService implements IUserService {
     public List<UserDTO> getAllUsersActive() {
         return UserMapper.usersToUsersDto(userRepository.findAll()
                 .stream()
-                .filter(user ->
-                        user.getIsActive().equals(Active.ACTIVE))
+                .filter(user -> user.getIsActive().equals(Active.ACTIVE))
                 .collect(Collectors.toList()));
     }
 
@@ -53,29 +57,27 @@ public class UserService implements IUserService {
     public List<UserDTO> getAllUserInActive() {
         return UserMapper.usersToUsersDto(userRepository.findAll()
                 .stream()
-                .filter(user ->
-                        user.getIsActive().equals(Active.INACTIVE))
+                .filter(user -> user.getIsActive().equals(Active.INACTIVE))
                 .collect(Collectors.toList()));
     }
 
     @Override
     public void registerUser(User user) throws MessagingException {
         log.info("Creating new user with email : {}", user.getEmail());
+        Role role= roleRepository.findByRole(ERole.valueOf(ERole.ADMIN.name()));
         User toSave = User.builder()
                 .firstname(user.getFirstname())
                 .lastname(user.getLastname())
                 .numberPhone(user.getNumberPhone())
                 .email(user.getEmail())
                 .password(passwordEncoder.encode(user.getPassword()))
-                .role(Role.USER)
+                .roles(List.of(role))
                 .isActive(Active.ACTIVE)
                 .isEnabled(false)
+                .confirmationToken(TokenGenerator.generateToken())
                 .build();
-        //UserMapper.userToDto(userRepository.save(toSave));
-        ConfirmationToken confirmationToken = new ConfirmationToken(toSave);
-        confirmationTokenRepository.save(confirmationToken);
-        iMailService.sendConfirmationEmail(confirmationToken,"ecommercemicroservice2024@gmail.com");
-        System.out.println("Confirmation Token: " + confirmationToken.getConfirmationToken());
+        userRepository.save(toSave);
+        iMailService.sendConfirmationEmail(toSave, "ecommercemicroservice2024@gmail.com");
         ResponseEntity.ok("Verify email by the link sent on your email address");
     }
 
@@ -130,15 +132,51 @@ public class UserService implements IUserService {
 
     @Override
     public ResponseEntity<?> confirmEmail(String confirmationToken) {
-        ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(confirmationToken);
-        if (token != null) {
-            User user = userRepository.findByEmailIgnoreCase(token.getUser().getEmail());
-            user.setEnabled(true);
-            userRepository.save(user);
-            return ResponseEntity.ok("Email verified successfully!");
+        User user = userRepository.findByConfirmationToken(confirmationToken)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid token!"));
+        user.setVerifiedAt(new Date());
+        user.setEnabled(true);
+        userRepository.save(user);
+        return ResponseEntity.ok(UserMapper.userToDto(user));
+    }
+
+    @Override
+    public void resetPassword(String email) throws MessagingException {
+        if (email == null) throw new
+                DataNotValidException(CustomerMessageError.EMAIL_IS_REQUIRED.getMessage());
+        User user = userRepository.findByEmail(email.toLowerCase()).orElse(null);
+        if (user != null  && user.getVerifiedAt() != null && user.isEnabled()) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.HOUR_OF_DAY, 24);
+            Date expiryDate = calendar.getTime();
+            user.setResetPasswordTokenExpiryDate(expiryDate);
+            user.setResetPasswordToken(TokenGenerator.generateToken());
+            updateUser(user.getUserId(), user);
+            UserDTO userDTO = UserMapper.userToDto(user);
+            iMailService.sendResetPasswordMail(user.getEmail(),
+                    CustomerEmailMessage.RESET_PASSWORD_SUBJECT.getMessage(),userDTO);
+        } else {
+            throw new RuntimeException("No account found with this email address!");
         }
-        return ResponseEntity.badRequest().body("Error: Couldn't verify email");
+    }
+
+    @Override
+    public void changePassword(ChangePasswordDTO dto) {
+        if (dto.getToken() == null || dto.getToken().isEmpty())
+            throw new DataNotValidException(CustomerMessageError.INVALID_REQUEST.getMessage());
+        if (!dto.getNewPassword().equals(dto.getMatchPassword()))
+            throw new RuntimeException(CustomerMessageError.PASSWORD_MATCH_ERROR.getMessage());
+        User appUser = userRepository.findByResetPasswordToken(dto.getToken()).orElseThrow();
+        if (appUser != null) {
+            appUser.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+            appUser.setResetPasswordToken(null);
+            appUser.setResetPasswordTokenExpiryDate(null);
+            updateUser(appUser.getUserId(), appUser);
+            UserMapper.userToDto(appUser);
+        }
     }
 
 
 }
+
+

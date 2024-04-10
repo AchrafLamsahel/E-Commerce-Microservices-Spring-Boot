@@ -1,9 +1,10 @@
 package org.usermicroservice.emails;
 
 import jakarta.mail.MessagingException;
-import org.usermicroservice.entities.ConfirmationToken;
+import org.usermicroservice.dtos.UserDTO;
+import org.usermicroservice.entities.User;
 
 public interface IMailService {
-    void sendConfirmationEmail(ConfirmationToken confirmationToken,String senderEmail)
-            throws MessagingException;
+    void sendConfirmationEmail(User user, String senderEmail) throws MessagingException;
+    void sendResetPasswordMail(String to, String subject, UserDTO userDTO) throws MessagingException;
 }

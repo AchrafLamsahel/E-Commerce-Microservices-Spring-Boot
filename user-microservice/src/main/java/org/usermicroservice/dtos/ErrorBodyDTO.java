@@ -8,11 +8,8 @@ import org.springframework.http.HttpStatus;
 import java.util.Date;
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
-@Getter
-public class ErrorBody {
+@AllArgsConstructor @NoArgsConstructor @Setter @Getter
+public class ErrorBodyDTO {
     private Date timestamp;
     private HttpStatus status;
     private List<String> errors;
