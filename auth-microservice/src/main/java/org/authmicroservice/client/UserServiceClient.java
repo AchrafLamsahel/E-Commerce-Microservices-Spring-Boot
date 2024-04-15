@@ -1,9 +1,13 @@
 package org.authmicroservice.client;
 
+import jakarta.mail.MessagingException;
+import jdk.jfr.ContentType;
+import org.authmicroservice.dto.ChangePasswordDTO;
 import org.authmicroservice.dto.RegisterRequestDTO;
 import org.authmicroservice.dto.RegisterResponseDTO;
 import org.authmicroservice.dto.UserDTO;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +23,13 @@ public interface UserServiceClient {
     @GetMapping("/users/existsByEmail/{email}")
     boolean existsByEmail(@PathVariable String email);
 
-    @GetMapping("/users/confirm-account")
-    ResponseEntity<?> confirmUserAccount(@RequestParam("token") String confirmationToken);
+    @GetMapping(value = "/users/confirm-account", produces = "application/json")
+    ResponseEntity<String> confirmUserAccount(@RequestParam("token") String confirmationToken);
+
+    @PostMapping("/users/recuperer-mot-de-passe")
+    ResponseEntity<String> handleResetPassword(@RequestParam("email") String email) throws MessagingException;
+
+    @PostMapping("/users/changer-mot-de-passe")
+    ResponseEntity<String> handleChangePassword( @RequestBody ChangePasswordDTO changePasswordDTO );
 
 }

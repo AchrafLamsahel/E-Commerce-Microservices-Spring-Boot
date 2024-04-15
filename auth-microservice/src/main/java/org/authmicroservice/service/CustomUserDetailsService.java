@@ -17,7 +17,7 @@ public class CustomUserDetailsService implements ICustomUserDetailService{
         var user = userServiceClient.getUserByEmail(email).getBody();
         assert user != null;
         if(user.getIsActive() == Active.INACTIVE) throw new RuntimeException("User is not active");
-        if (user == null ) throw new UsernameNotFoundException("Invalid Email or password.");
+        if ( user == null ) throw new UsernameNotFoundException("Invalid Email or password.");
         if( !user.isEnabled()) throw  new RuntimeException("Please enable your account.");
         return new CustomUserDetails(user);
     }

@@ -17,6 +17,7 @@ public class Category extends AbstractEntities {
     private String label;
     @Indexed(unique = true)
     private String slug;
+    private String description;
     private String categoryTitle;
     private String imageUrl;
     private boolean valid;

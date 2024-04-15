@@ -29,6 +29,7 @@ public enum CustomerMessageError {
     EMAIL_IS_INVALID("Email is invalid, please check the format."),
     PHONE_NUMBER_NOT_VALID("Phone Number Not Valid"),
     INVALID_REQUEST("Invalid request."),
+    ROLE_NOT_FOUND_WITH_ROLE_EQUALS("Role Not found with role =  "),
     PASSWORDS_DO_NOT_MATCH("Passwords do not match.");
 
     private final String msg;

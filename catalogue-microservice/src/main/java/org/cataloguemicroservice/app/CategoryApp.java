@@ -22,7 +22,6 @@ public class CategoryApp {
     private final ICategoryService iCategoryService;
     private final IProductService iProductService;
     private final CategoryRepository categoryRepository;
-    private final ProductRepository productRepository;
 
 
     public ThreeCategory getIndex(Integer pageNumber, Integer pageSize, String sort) {
@@ -47,10 +46,11 @@ public class CategoryApp {
         }
         Category rootCategory = iCategoryService.getCategoryById(category.getIdParent());
         categoryPageDTO.setRootCategory(rootCategory);
-        categoryPageDTO.setSubCategory(category);
         List<Product> productList = iProductService.getProductById(category.getCategoryId());
         categoryPageDTO.setProducts(productList);
-        BreadcrumbDTO breadcrumbDTO = new BreadcrumbDTO("/" + rootCategory.getSlug() + "/" + category.getSlug(), rootCategory.getLabel() + category.getLabel());
+        BreadcrumbDTO breadcrumbDTO1 = new BreadcrumbDTO("/" + rootCategory.getSlug(), rootCategory.getLabel());
+        BreadcrumbDTO breadcrumbDTO = new BreadcrumbDTO("/" + rootCategory.getSlug() + "/" + category.getSlug(),  category.getLabel());
+        categoryPageDTO.getBreadcrumbDTO().add(breadcrumbDTO1);
         categoryPageDTO.getBreadcrumbDTO().add(breadcrumbDTO);
         return categoryPageDTO;
     }

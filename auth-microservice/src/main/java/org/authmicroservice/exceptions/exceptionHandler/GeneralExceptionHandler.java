@@ -1,9 +1,6 @@
 package org.authmicroservice.exceptions.exceptionHandler;
 
-import org.authmicroservice.exceptions.DataNotValidException;
-import org.authmicroservice.exceptions.EmailOrPasswordIncorrectException;
-import org.authmicroservice.exceptions.GenericErrorResponse;
-import org.authmicroservice.exceptions.ValidationException;
+import org.authmicroservice.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -36,8 +33,8 @@ public class GeneralExceptionHandler  extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(DataNotValidException.class)
-    public ResponseEntity<?> dataValidator(DataNotValidException exception) {
+    @ExceptionHandler(value = {DataNotValidException.class, InvalidPasswordException.class})
+    public ResponseEntity<?> dataValidator(RuntimeException exception) {
         Map<String, String> errors = new HashMap<>();
         errors.put("error", exception.getMessage());
         return new ResponseEntity<>(errors, HttpStatus.NOT_ACCEPTABLE);

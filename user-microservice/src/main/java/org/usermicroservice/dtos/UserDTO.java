@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.usermicroservice.enums.Active;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
 public class UserDTO {

@@ -14,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 public class ThreeCategory {
     private List<CategoriesTree> categoriesTrees = new ArrayList<>();
-    private List<Product> allProducts = new ArrayList<>();
     private Page<Product> allProductsPage;
 
 }

@@ -5,7 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.authmicroservice.enums.Active;
-import org.authmicroservice.enums.Role;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
 public class UserDTO {
@@ -15,7 +16,9 @@ public class UserDTO {
     private String email;
     private String numberPhone;
     private String password;
-    private boolean isEnabled;
     private Active isActive;
-    private Role role;
+    private boolean isEnabled;
+    private String confirmationToken;
+    private String resetPasswordToken;
+    private Collection<RoleDTO> roles = new ArrayList<>();
 }

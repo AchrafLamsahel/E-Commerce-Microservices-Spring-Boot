@@ -16,6 +16,8 @@ public class Product extends AbstractEntities {
     private String slug;
     private String productTitle;
     private String imageUrl;
+    private Long price;
+    private String description;
     private Long idCategory;
     private boolean valid;
 }

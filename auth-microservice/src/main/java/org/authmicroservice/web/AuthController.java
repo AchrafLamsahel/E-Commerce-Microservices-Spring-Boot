@@ -1,11 +1,10 @@
 package org.authmicroservice.web;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import org.authmicroservice.dto.LoginRequestDTO;
-import org.authmicroservice.dto.LoginResponseDTO;
-import org.authmicroservice.dto.RegisterRequestDTO;
-import org.authmicroservice.dto.RegisterResponseDTO;
+import org.authmicroservice.dto.*;
 import org.authmicroservice.service.AuthService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +20,21 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<RegisterResponseDTO> register(@RequestBody RegisterRequestDTO request) {return ResponseEntity.ok(authService.register(request));}
 
-    @GetMapping("/confirm-account")
-    public ResponseEntity<?> validationEmail(@RequestParam("token") String confirmationToken) {
+    @RequestMapping(value = "/confirm-account", method = {RequestMethod.GET, RequestMethod.POST})
+    public ResponseEntity<String> validationEmail(@RequestParam("token") String confirmationToken) {
         return authService.confirmEmail(confirmationToken);
+    }
+
+    @PostMapping("/recuperer-mot-de-passe")
+    public ResponseEntity<?> handleResetPassword(@RequestParam("email") String email) throws MessagingException {
+        return authService.handleResetPassword(email);
+    }
+
+    @PostMapping("/changer-mot-de-passe")
+    public ResponseEntity<?> handleChangePassword(@RequestParam("token") String token, @RequestBody ChangePasswordDTO changePasswordDTO) {
+        changePasswordDTO.setToken(token);
+        authService.handleChangePassword(changePasswordDTO);
+        return ResponseEntity.ok("Le mot de passe a été changé avec succès");
     }
 
 }

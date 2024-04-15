@@ -39,9 +39,13 @@ public class ProductApp {
         productDetailsDTO.setRootCategory(rootCategory);
         productDetailsDTO.setSubCategory(category);
         productDetailsDTO.setProduct(product);
-        BreadcrumbDTO breadcrumbDTO = new BreadcrumbDTO("/"+ rootCategory.getSlug()+"/"+ category.getSlug() +"/"+ product.getSlug(),
-                category.getLabel() + product.getSlug());
+        BreadcrumbDTO breadcrumbDTO = new BreadcrumbDTO("/"+ rootCategory.getSlug(), rootCategory.getLabel() );
+        BreadcrumbDTO breadcrumbDTO1 = new BreadcrumbDTO("/"+ rootCategory.getSlug()+"/"+ category.getSlug() , category.getSlug());
+        BreadcrumbDTO breadcrumbDTO2 = new BreadcrumbDTO("/"+ rootCategory.getSlug()+"/"+ category.getSlug() +"/"+ product.getSlug(), product.getSlug());
         productDetailsDTO.getBreadcrumbDTO().add(breadcrumbDTO);
+        productDetailsDTO.getBreadcrumbDTO().add(breadcrumbDTO1);
+        productDetailsDTO.getBreadcrumbDTO().add(breadcrumbDTO2);
         return productDetailsDTO;
     }
+
 }

@@ -2,11 +2,14 @@ package org.usermicroservice.web;
 
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.usermicroservice.dtos.ChangePasswordDTO;
 import org.usermicroservice.dtos.UserDTO;
 import org.usermicroservice.entities.User;
+import org.usermicroservice.exceptions.InvalidPasswordException;
+import org.usermicroservice.exceptions.UserNotFoundException;
 import org.usermicroservice.services.IUserService;
 import java.util.List;
 
@@ -62,20 +65,20 @@ public class UserController {
     }
 
     @RequestMapping(value = "/confirm-account", method = {RequestMethod.GET, RequestMethod.POST})
-    public ResponseEntity<?> confirmUserAccount(@RequestParam("token") String confirmationToken) {
+    public ResponseEntity<String> confirmUserAccount(@RequestParam("token") String confirmationToken) {
         return iUserService.confirmEmail(confirmationToken);
     }
 
     @PostMapping("/recuperer-mot-de-passe")
-    public String handleResetPassword(@RequestParam("email") String email) throws MessagingException {
+    public ResponseEntity<String> handleResetPassword(@RequestParam("email") String email) throws MessagingException {
         iUserService.resetPassword(email);
-        return "check your Email";
+        return ResponseEntity.ok("Un email de réinitialisation a été envoyé à " + email);
     }
 
     @PostMapping("/changer-mot-de-passe")
-    public String handleChangePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
+    public ResponseEntity<String> handleChangePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
         iUserService.changePassword(changePasswordDTO);
-        return "check your Password";
+        return ResponseEntity.ok("Le mot de passe a été changé avec succès");
     }
 
 }

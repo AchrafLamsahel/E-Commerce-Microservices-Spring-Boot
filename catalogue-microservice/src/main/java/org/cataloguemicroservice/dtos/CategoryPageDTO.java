@@ -15,7 +15,6 @@ import java.util.List;
 @Setter
 public class CategoryPageDTO {
     private Category rootCategory;
-    private Category subCategory;
     private List<Category> subCategories;
     private List<Product> products;
     private List<BreadcrumbDTO> breadcrumbDTO = new ArrayList<>();

@@ -1,5 +1,6 @@
 package org.authmicroservice.service;
 
+import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.authmicroservice.client.UserServiceClient;
 import org.authmicroservice.dto.*;
@@ -32,10 +33,10 @@ public class AuthService implements IAuthService {
                         .refreshToken(jwtService.generateToken(request.getEmail()))
                         .build();
             } else {
-                throw new EmailOrPasswordIncorrectException("Wrong credentials");
+                throw new EmailOrPasswordIncorrectException("User is not Authenticated");
             }
         } else {
-            throw new EmailOrPasswordIncorrectException("Wrong credentials");
+            throw new EmailOrPasswordIncorrectException("Email or password is incorrect");
         }
     }
 
@@ -55,14 +56,28 @@ public class AuthService implements IAuthService {
         userServiceClient.save(request).getBody();
         // email for validation
         return RegisterResponseDTO.builder()
-                .message(CustomerMessageValidator.SAVED_SUCCESSFULLY.getMessage()+" "
-                        + CustomerMessageValidator.CHECK_EMAIL_FOR_VALIDATION.getMessage())
+                .message(CustomerMessageValidator.SAVED_SUCCESSFULLY.getMessage()+" please "
+                        + CustomerMessageValidator.CHECK_EMAIL_FOR_VALIDATION_YOUR_MAIL.getMessage())
                 .build();
     }
 
     @Override
-    public ResponseEntity<?> confirmEmail(String confirmationToken) {
+    public ResponseEntity<String> confirmEmail(String confirmationToken) {
         return userServiceClient.confirmUserAccount(confirmationToken);
+    }
+
+    @Override
+    public ResponseEntity<String> handleResetPassword(String email) throws MessagingException {
+        return userServiceClient.handleResetPassword(email);
+    }
+
+    @Override
+    public ResponseEntity<String> handleChangePassword(ChangePasswordDTO changePasswordDTO) {
+        if (changePasswordDTO.getToken() == null || changePasswordDTO.getToken().isEmpty())
+            throw new DataNotValidException(CustomerMessageError.INVALID_REQUEST.getMessage());
+        if (!changePasswordDTO.getNewPassword().equals(changePasswordDTO.getMatchPassword()))
+            throw new RuntimeException(CustomerMessageError.PASSWORD_MATCH_ERROR.getMessage());
+        return userServiceClient.handleChangePassword(changePasswordDTO);
     }
 
 }

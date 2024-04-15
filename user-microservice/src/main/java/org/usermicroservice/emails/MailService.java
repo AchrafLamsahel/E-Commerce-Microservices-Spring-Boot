@@ -41,7 +41,7 @@ public class MailService implements IMailService {
     }
 
     private String generateConfirmationLink(String token){
-        return "<a href=http://localhost:8085/users/confirm-account?token="+token+">Confirm Email</a>";
+        return "<a href=http://localhost:8085/auth/confirm-account?token="+token+">Confirm Email</a>";
     }
 
 
@@ -56,8 +56,8 @@ public class MailService implements IMailService {
                         "<body>" +
                         "<h2>Dear "+ userDTO.getFirstname() + ",</h2>"
                         + "<br/> We have sent you this email in response to your password reset request. " +
-                        " <br/> To reset your password, please follow the link below:"
-                        + "<a href=http://localhost:8085/users/reset-password?token="+userDTO.getConfirmationToken()+">Reset Password</a>" +
+                        " <br/> To reset your password, please follow the link below:  "
+                        + "<a href=http://localhost:8085/auth/changer-mot-de-passe?token="+userDTO.getResetPasswordToken()+">Reset Password</a>" +
                         "<br/> Regards,<br/>" +
                         "E-Commerce Registration Team" +
                         "</body>" +
@@ -68,7 +68,7 @@ public class MailService implements IMailService {
     }
 
     private String generateResetPasswordLink(String token){
-        return "<a href=http://localhost:8085/users/reset-password?token="+token+">Reset Password</a>";
+        return "<a href=http://localhost:8085/users/changer-mot-de-passe?token="+token+">Reset Password</a>";
     }
 
 }

@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/products")
 @AllArgsConstructor
 public class ProductController {
-    private final CategoryApp categoryApp;
     private final ProductApp productApp;
-    private final IProductService iProductService;
 
     @GetMapping("/{productSlug}")
     public ProductDetailsDTO getProductBySlug(@PathVariable("productSlug") String productSlug) {

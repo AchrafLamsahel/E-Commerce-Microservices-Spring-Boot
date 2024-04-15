@@ -1,10 +1,11 @@
 package org.authmicroservice.service;
 
-import org.authmicroservice.dto.LoginRequestDTO;
-import org.authmicroservice.dto.LoginResponseDTO;
-import org.authmicroservice.dto.RegisterRequestDTO;
-import org.authmicroservice.dto.RegisterResponseDTO;
+import jakarta.mail.MessagingException;
+import org.authmicroservice.dto.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 public interface IAuthService {
 
@@ -13,5 +14,9 @@ public interface IAuthService {
     RegisterResponseDTO register(RegisterRequestDTO request);
 
     ResponseEntity<?> confirmEmail(String confirmationToken);
+
+    ResponseEntity<String> handleResetPassword(String email) throws MessagingException;
+
+    ResponseEntity<String> handleChangePassword( ChangePasswordDTO changePasswordDTO);
 
 }

@@ -23,14 +23,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorBodyDTO, errorBodyDTO.getStatus());
     }
 
-    @ExceptionHandler(EmptyEntityException.class)
-    public ResponseEntity<?> handleAlreadyExistsException(EmptyEntityException ex) {
+    @ExceptionHandler(value = {EmptyEntityException.class,InvalidPasswordException.class})
+    public ResponseEntity<?> handleAlreadyExistsException(RuntimeException ex) {
         ErrorBodyDTO errorBodyDTO = new ErrorBodyDTO(new Date(), HttpStatus.NOT_ACCEPTABLE, Collections.singletonList(ex.getMessage()));
         return new ResponseEntity<>(errorBodyDTO, errorBodyDTO.getStatus());
     }
 
-    @ExceptionHandler(RoleNoteFoundException.class)
-    public ResponseEntity<?> handleUserNotFound(RoleNoteFoundException ex) {
+    @ExceptionHandler(RoleNotFoundException.class)
+    public ResponseEntity<?> handleUserNotFound(RoleNotFoundException ex) {
         ErrorBodyDTO errorBodyDTO = new ErrorBodyDTO(new Date(), HttpStatus.NOT_FOUND, Collections.singletonList(ex.getMessage()));
         return new ResponseEntity<>(errorBodyDTO, errorBodyDTO.getStatus());
     }

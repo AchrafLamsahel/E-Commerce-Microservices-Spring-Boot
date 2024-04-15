@@ -17,18 +17,28 @@ public class ConfigRouter {
     @Bean
     public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
+
                 .route(USER_MICROSERVICE, r -> r.path("/users/**")
                         .filters(f->f.filter(filter))
-                        .uri("lb://user-microservice"))
+                        .uri(USER_MICROSERVICE_URI))
+
                 .route(CATALOGUE_MICROSERVICE, r -> r.path("/products/**")
-                        .uri("lb://catalogue-microservice"))
+                        .uri(CATALOGUE_MICROSERVICE_URI))
+
+                .route(CATALOGUE_MICROSERVICE, r -> r.path("/categories/**")
+                        .uri(CATALOGUE_MICROSERVICE_URI))
+
                 .route(PAYMENT_MICROSERVICE, r -> r.path("/payment/**")
-                        .uri("lb://payment-microservice"))
+                        .filters(f->f.filter(filter))
+                        .uri(PAYMENT_MICROSERVICE_URI))
+
                 .route(ORDER_MICROSERVICE, r -> r.path("/order/**")
-                        .uri("lb://order-microservice"))
+                        .uri(ORDER_MICROSERVICE_URI))
+
                 .route(AUTH_MICROSERVICE, r -> r.path("/auth/**")
                         .filters(f->f.filter(filter))
-                        .uri("lb://auth-microservice"))
+                        .uri(AUTH_MICROSERVICE_URI))
+
                 .build();
     }
 }

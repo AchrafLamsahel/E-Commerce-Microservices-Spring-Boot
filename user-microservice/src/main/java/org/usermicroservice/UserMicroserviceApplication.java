@@ -14,6 +14,7 @@ import org.usermicroservice.services.IUserService;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootApplication
 @AllArgsConstructor
@@ -30,15 +31,15 @@ public class UserMicroserviceApplication {
             Role userRole = new Role(ERole.USER);
             Role adminRole = new Role(ERole.ADMIN);
             roleRepository.saveAll(List.of(adminRole,userRole));
-            Role roleUser= roleRepository.findByRole(ERole.USER);
-            Role roleAdmin= roleRepository.findByRole(ERole.ADMIN);
+            Optional<Role> roleUser= roleRepository.findByRole(ERole.USER);
+            Optional<Role> roleAdmin= roleRepository.findByRole(ERole.ADMIN);
             User toUser = User.builder()
                     .firstname("Achraf")
                     .lastname("Lamsahel")
                     .email("achraflamsahel1@gmail.com")
                     .numberPhone("0621403650")
                     .password("qwerty123")
-                    .roles(List.of(roleUser,roleAdmin))
+                    .roles(List.of(userRole))
                     .isActive(Active.ACTIVE)
                     .build();
 
@@ -48,7 +49,7 @@ public class UserMicroserviceApplication {
                     .email("oussama@gmail.com")
                     .numberPhone("0621403650")
                     .password("qwerty123")
-                    .roles(List.of(roleUser))
+                    .roles(List.of(userRole))
                     .isActive(Active.ACTIVE)
                     .build();
 
@@ -58,7 +59,7 @@ public class UserMicroserviceApplication {
                     .email("kaztar@gmail.com")
                     .numberPhone("0621403650")
                     .password("qwerty123")
-                    .roles(List.of(roleUser))
+                    .roles(List.of(userRole))
                     .isActive(Active.INACTIVE)
                     .build();
 

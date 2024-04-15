@@ -19,6 +19,7 @@ import org.usermicroservice.enums.CustomerEmailMessage;
 import org.usermicroservice.enums.CustomerMessageError;
 import org.usermicroservice.enums.ERole;
 import org.usermicroservice.exceptions.DataNotValidException;
+import org.usermicroservice.exceptions.RoleNotFoundException;
 import org.usermicroservice.exceptions.UserNotFoundException;
 import org.usermicroservice.mappers.UserMapper;
 import org.usermicroservice.repositories.RoleRepository;
@@ -38,7 +39,6 @@ public class UserService implements IUserService {
     private final IMailService iMailService;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
-
 
     @Override
     public List<UserDTO> getAllUsers() {
@@ -64,7 +64,8 @@ public class UserService implements IUserService {
     @Override
     public void registerUser(User user) throws MessagingException {
         log.info("Creating new user with email : {}", user.getEmail());
-        Role role= roleRepository.findByRole(ERole.valueOf(ERole.ADMIN.name()));
+        Role role= roleRepository.findByRole(ERole.valueOf(ERole.ADMIN.name())).orElseThrow(
+                () -> new RoleNotFoundException(CustomerMessageError.USER_NOT_FOUND_WITH_EMAIL_EQUALS.getMessage() + user.getEmail()));
         User toSave = User.builder()
                 .firstname(user.getFirstname())
                 .lastname(user.getLastname())
@@ -131,13 +132,13 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public ResponseEntity<?> confirmEmail(String confirmationToken) {
+    public ResponseEntity<String> confirmEmail(String confirmationToken) {
         User user = userRepository.findByConfirmationToken(confirmationToken)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid token!"));
         user.setVerifiedAt(new Date());
         user.setEnabled(true);
         userRepository.save(user);
-        return ResponseEntity.ok(UserMapper.userToDto(user));
+        return ResponseEntity.ok("Your Email confirmed successfully.");
     }
 
     @Override
@@ -162,12 +163,13 @@ public class UserService implements IUserService {
 
     @Override
     public void changePassword(ChangePasswordDTO dto) {
-        if (dto.getToken() == null || dto.getToken().isEmpty())
-            throw new DataNotValidException(CustomerMessageError.INVALID_REQUEST.getMessage());
-        if (!dto.getNewPassword().equals(dto.getMatchPassword()))
-            throw new RuntimeException(CustomerMessageError.PASSWORD_MATCH_ERROR.getMessage());
+        log.info("Change password : {}","********");
         User appUser = userRepository.findByResetPasswordToken(dto.getToken()).orElseThrow();
         if (appUser != null) {
+            if (appUser.getResetPasswordTokenExpiryDate() != null &&
+                    appUser.getResetPasswordTokenExpiryDate().before(new Date())) {
+                throw new RuntimeException("Le jeton de réinitialisation de mot de passe a expiré.");
+            }
             appUser.setPassword(passwordEncoder.encode(dto.getNewPassword()));
             appUser.setResetPasswordToken(null);
             appUser.setResetPasswordTokenExpiryDate(null);
@@ -176,6 +178,17 @@ public class UserService implements IUserService {
         }
     }
 
+    @Override
+    public void addRoleToUserByEmail(ERole eRole, String email) {
+        log.info("Add Role to  user with email : {}", email);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(
+                CustomerMessageError.USER_NOT_FOUND_WITH_EMAIL_EQUALS.getMessage() + email
+        ));
+        Role role = roleRepository.findByRole(eRole).orElseThrow(() -> new RoleNotFoundException(
+                CustomerMessageError.USER_NOT_FOUND_WITH_EMAIL_EQUALS.getMessage() + eRole
+        ));
+        user.getRoles().add(role);
+    }
 
 }
 

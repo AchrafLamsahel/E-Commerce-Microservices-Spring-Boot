@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.usermicroservice.dtos.ChangePasswordDTO;
 import org.usermicroservice.dtos.UserDTO;
 import org.usermicroservice.entities.User;
+import org.usermicroservice.enums.ERole;
+
 import java.util.List;
 
 public interface IUserService {
@@ -17,7 +19,8 @@ public interface IUserService {
     void deleteUserById(Long id);
     UserDTO updateUser(Long id,User user);
     boolean existsByEmail(String email);
-    ResponseEntity<?> confirmEmail(String confirmationToken);
+    ResponseEntity<String> confirmEmail(String confirmationToken);
     void resetPassword(String email) throws MessagingException;
     void changePassword(ChangePasswordDTO dto);
+    void addRoleToUserByEmail(ERole eRole, String email);
 }
