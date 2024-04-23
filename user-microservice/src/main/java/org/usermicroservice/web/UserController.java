@@ -2,14 +2,12 @@ package org.usermicroservice.web;
 
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.usermicroservice.dtos.ChangePasswordDTO;
 import org.usermicroservice.dtos.UserDTO;
 import org.usermicroservice.entities.User;
-import org.usermicroservice.exceptions.InvalidPasswordException;
-import org.usermicroservice.exceptions.UserNotFoundException;
+import org.usermicroservice.enums.ERole;
 import org.usermicroservice.services.IUserService;
 import java.util.List;
 
@@ -19,20 +17,20 @@ import java.util.List;
 public class UserController {
     private final IUserService iUserService;
 
+    /**
+     * path : (GET) --> http://localhost:8081/users/
+     * @return
+     */
+
     @GetMapping("/")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         return ResponseEntity.ok(iUserService.getAllUsers());
     }
+    /**
+     * path : (GET) --> http://localhost:8081/users/{id}
+     * @return
+     */
 
-    @GetMapping("/Active")
-    public ResponseEntity<List<UserDTO>> getAllUsersActive() {
-        return ResponseEntity.ok(iUserService.getAllUsersActive());
-    }
-
-    @GetMapping("/InActive")
-    public ResponseEntity<List<UserDTO>> getAllUsersInActive() {
-        return ResponseEntity.ok(iUserService.getAllUserInActive());
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
@@ -44,24 +42,23 @@ public class UserController {
         iUserService.registerUser(user);
     }
 
+    /**
+     * path : (GET) --> http://localhost:8081/users/getUserByEmail/{email}
+     * @return
+     */
+
     @GetMapping("/getUserByEmail/{email}")
     public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
         return ResponseEntity.ok(iUserService.getUserByEmail(email));
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteUserById(@PathVariable Long id) {
-        iUserService.deleteUserById(id);
-    }
-
+    /**
+     * path : (GET) --> http://localhost:8081/users/existsByEmail/{email}
+     * @return
+     */
     @GetMapping("/existsByEmail/{email}")
     public boolean existsByEmail(@PathVariable String email) {
         return iUserService.existsByEmail(email);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody User user) {
-        return ResponseEntity.ok(iUserService.updateUser(id, user));
     }
 
     @RequestMapping(value = "/confirm-account", method = {RequestMethod.GET, RequestMethod.POST})
@@ -79,6 +76,50 @@ public class UserController {
     public ResponseEntity<String> handleChangePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
         iUserService.changePassword(changePasswordDTO);
         return ResponseEntity.ok("Le mot de passe a été changé avec succès");
+    }
+
+    /** -------------------------- ADMIN -----------------------------  */
+    @GetMapping("/admin/Active")
+    public ResponseEntity<List<UserDTO>> getAllUsersActive() {
+        return ResponseEntity.ok(iUserService.getAllUsersActive());
+    }
+
+    @GetMapping("/admin/InActive")
+    //@PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<UserDTO>> getAllUsersInActive() {
+        return ResponseEntity.ok(iUserService.getAllUserInActive());
+    }
+
+    @PutMapping("/admin/{id}")
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody User user) {
+        return ResponseEntity.ok(iUserService.updateUser(id, user));
+    }
+
+    @PutMapping("/admin/add-role")
+    public ResponseEntity<?> addRoleToUserByEmail(@RequestParam ERole eRole, @RequestParam String email) {
+        iUserService.addRoleToUserByEmail(eRole, email);
+        return ResponseEntity.ok("Role added successfully.");
+    }
+
+    @PutMapping("/admin/{id}/activate")
+    public ResponseEntity<?> activateUser(@PathVariable Long id) {
+        iUserService.activeUser(id);
+        return ResponseEntity.ok("User activated successfully.");
+    }
+
+    @PutMapping("/admin/{id}/deactivate")
+    public ResponseEntity<?> deactivateUser(@PathVariable Long id) {
+        iUserService.inActiveUser(id);
+        return ResponseEntity.ok("User deactivated successfully.");
+    }
+
+    /**
+     * path : (Delete) --> http://localhost:8081/users/admin/{id}
+     * @return
+     */
+    @DeleteMapping("/admin/{id}")
+    public void deleteUserById(@PathVariable Long id) {
+        iUserService.deleteUserById(id);
     }
 
 }

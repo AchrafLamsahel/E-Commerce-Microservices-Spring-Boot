@@ -41,24 +41,28 @@ public class AuthService implements IAuthService {
     }
 
     public RegisterResponseDTO register(RegisterRequestDTO request) {
-        if (InputValidatorRegister.isValidPassword(request.getPassword()))
-            throw new DataNotValidException(CustomerMessageError.PASSWORD_LENGTH_ERROR.getMessage());
-        if (!InputValidatorRegister.isValidMoroccanPhoneNumber(request.getNumberPhone()))
-            throw new DataNotValidException(CustomerMessageError.PHONE_NUMBER_NOT_VALID.getMessage());
-        if (!InputValidatorRegister.isValidEmail(request.getEmail()))
-            throw new DataNotValidException(CustomerMessageError.EMAIL_IS_INVALID.getMessage());
-        if (InputValidatorRegister.isNull(request.getFirstname()))
-            throw new DataNotValidException(CustomerMessageError.FIRSTNAME_IS_REQUIRED.getMessage());
-        if (InputValidatorRegister.isNull(request.getLastname()))
-            throw new DataNotValidException(CustomerMessageError.LASTNAME_IS_REQUIRED.getMessage());
-        if (userServiceClient.existsByEmail(request.getEmail()))
-            throw new DataNotValidException(CustomerMessageError.EMAIL_ALREADY_EXIST.getMessage());
-        userServiceClient.save(request).getBody();
-        // email for validation
-        return RegisterResponseDTO.builder()
-                .message(CustomerMessageValidator.SAVED_SUCCESSFULLY.getMessage()+" please "
-                        + CustomerMessageValidator.CHECK_EMAIL_FOR_VALIDATION_YOUR_MAIL.getMessage())
-                .build();
+        String errorMessage =
+                InputValidatorRegister.isValidPassword(request.getPassword()) ? null : CustomerMessageError.PASSWORD_LENGTH_ERROR.getMessage();
+        errorMessage = errorMessage != null ? errorMessage :
+                InputValidatorRegister.isValidMoroccanPhoneNumber(request.getNumberPhone()) ? null : CustomerMessageError.PHONE_NUMBER_NOT_VALID.getMessage();
+        errorMessage = errorMessage != null ? errorMessage :
+                InputValidatorRegister.isValidEmail(request.getEmail()) ? null : CustomerMessageError.EMAIL_IS_INVALID.getMessage();
+        errorMessage = errorMessage != null ? errorMessage :
+                InputValidatorRegister.isNull(request.getFirstname()) ? CustomerMessageError.FIRSTNAME_IS_REQUIRED.getMessage() : null;
+        errorMessage = errorMessage != null ? errorMessage :
+                InputValidatorRegister.isNull(request.getLastname()) ? CustomerMessageError.LASTNAME_IS_REQUIRED.getMessage() : null;
+        errorMessage = errorMessage != null ? errorMessage :
+                userServiceClient.existsByEmail(request.getEmail()) ? CustomerMessageError.EMAIL_ALREADY_EXIST.getMessage() : null;
+
+        if (errorMessage != null) {
+            throw new DataNotValidException(errorMessage);
+        } else {
+            userServiceClient.save(request).getBody();
+            return RegisterResponseDTO.builder()
+                    .message(CustomerMessageValidator.SAVED_SUCCESSFULLY.getMessage() + " please " +
+                            CustomerMessageValidator.CHECK_EMAIL_FOR_VALIDATION_YOUR_MAIL.getMessage())
+                    .build();
+        }
     }
 
     @Override

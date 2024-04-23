@@ -33,7 +33,6 @@ public class JwtService implements IJwtService {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION_MS);
         Date refreshTokenExpiryDate = new Date(now.getTime() + REFRESH_TOKEN_EXPIRATION_MS);
-
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
@@ -43,7 +42,6 @@ public class JwtService implements IJwtService {
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
-
 
     public Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);
@@ -69,4 +67,5 @@ public class JwtService implements IJwtService {
         Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }
+
 }

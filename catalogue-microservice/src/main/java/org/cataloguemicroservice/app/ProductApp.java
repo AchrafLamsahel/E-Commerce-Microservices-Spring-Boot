@@ -10,6 +10,7 @@ import org.cataloguemicroservice.services.ICategoryService;
 import org.cataloguemicroservice.services.IProductService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
 import java.util.List;
 
 @Component
@@ -19,6 +20,7 @@ public class ProductApp {
     private final IProductService iProductService;
     @Qualifier("ICategoryService")
     private final ICategoryService iCategoryService;
+
     public List<Product> getAll() {
         return productRepository.findAll();
     }
@@ -27,10 +29,10 @@ public class ProductApp {
         ProductDetailsDTO productDetailsDTO = new ProductDetailsDTO();
         Product product = iProductService.getProductBySlug(slug);
         Category category = iCategoryService.getCategoryByIdParent(product.getIdCategory());
-        if ( category.getIdParent() == 0 )  {
+        if (category.getIdParent() == 0) {
             productDetailsDTO.setRootCategory(category);
             productDetailsDTO.setProduct(product);
-            BreadcrumbDTO breadcrumbDTO = new BreadcrumbDTO("/"+ category.getSlug()+"/"+ product.getSlug(),
+            BreadcrumbDTO breadcrumbDTO = new BreadcrumbDTO("/" + category.getSlug() + "/" + product.getSlug(),
                     category.getLabel() + product.getSlug());
             productDetailsDTO.getBreadcrumbDTO().add(breadcrumbDTO);
             return productDetailsDTO;
@@ -39,9 +41,9 @@ public class ProductApp {
         productDetailsDTO.setRootCategory(rootCategory);
         productDetailsDTO.setSubCategory(category);
         productDetailsDTO.setProduct(product);
-        BreadcrumbDTO breadcrumbDTO = new BreadcrumbDTO("/"+ rootCategory.getSlug(), rootCategory.getLabel() );
-        BreadcrumbDTO breadcrumbDTO1 = new BreadcrumbDTO("/"+ rootCategory.getSlug()+"/"+ category.getSlug() , category.getSlug());
-        BreadcrumbDTO breadcrumbDTO2 = new BreadcrumbDTO("/"+ rootCategory.getSlug()+"/"+ category.getSlug() +"/"+ product.getSlug(), product.getSlug());
+        BreadcrumbDTO breadcrumbDTO = new BreadcrumbDTO("/" + rootCategory.getSlug(), rootCategory.getLabel());
+        BreadcrumbDTO breadcrumbDTO1 = new BreadcrumbDTO("/" + rootCategory.getSlug() + "/" + category.getSlug(), category.getSlug());
+        BreadcrumbDTO breadcrumbDTO2 = new BreadcrumbDTO("/" + rootCategory.getSlug() + "/" + category.getSlug() + "/" + product.getSlug(), product.getSlug());
         productDetailsDTO.getBreadcrumbDTO().add(breadcrumbDTO);
         productDetailsDTO.getBreadcrumbDTO().add(breadcrumbDTO1);
         productDetailsDTO.getBreadcrumbDTO().add(breadcrumbDTO2);

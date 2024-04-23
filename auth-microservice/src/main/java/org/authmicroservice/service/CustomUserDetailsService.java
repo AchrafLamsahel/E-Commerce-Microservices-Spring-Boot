@@ -21,4 +21,5 @@ public class CustomUserDetailsService implements ICustomUserDetailService{
         if( !user.isEnabled()) throw  new RuntimeException("Please enable your account.");
         return new CustomUserDetails(user);
     }
+
 }

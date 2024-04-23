@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
     private final ProductApp productApp;
 
+     /*
+            + Add Product + Update Prooduct
+            + Activate and Inactivate Product
+    */
+
     @GetMapping("/{productSlug}")
     public ProductDetailsDTO getProductBySlug(@PathVariable("productSlug") String productSlug) {
         return productApp.getProductBySlug(productSlug);

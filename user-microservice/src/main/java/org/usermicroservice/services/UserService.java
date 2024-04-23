@@ -42,11 +42,13 @@ public class UserService implements IUserService {
 
     @Override
     public List<UserDTO> getAllUsers() {
+        log.info("Get all users");
         return UserMapper.usersToUsersDto(userRepository.findAll());
     }
 
     @Override
     public List<UserDTO> getAllUsersActive() {
+        log.info("Get All Users Active  ");
         return UserMapper.usersToUsersDto(userRepository.findAll()
                 .stream()
                 .filter(user -> user.getIsActive().equals(Active.ACTIVE))
@@ -55,6 +57,7 @@ public class UserService implements IUserService {
 
     @Override
     public List<UserDTO> getAllUserInActive() {
+        log.info("Get All Users InActive ");
         return UserMapper.usersToUsersDto(userRepository.findAll()
                 .stream()
                 .filter(user -> user.getIsActive().equals(Active.INACTIVE))
@@ -93,6 +96,7 @@ public class UserService implements IUserService {
 
     @Override
     public UserDTO getUserByEmail(String email) {
+        log.info("Fetching user by email : {}", email);
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new
                         UserNotFoundException(
@@ -102,6 +106,7 @@ public class UserService implements IUserService {
 
     @Override
     public void deleteUserById(Long id) {
+        log.info("Deactivate user by id: {}", id);
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(
                         CustomerMessageError.USER_NOT_FOUND_WITH_ID_EQUALS.getMessage() + id));
@@ -119,7 +124,7 @@ public class UserService implements IUserService {
         existingUser.setFirstname(user.getFirstname());
         existingUser.setLastname(user.getLastname());
         existingUser.setNumberPhone(user.getNumberPhone());
-        existingUser.setEmail(user.getEmail());
+        //existingUser.setEmail(user.getEmail());
         existingUser.setPassword(user.getPassword());
         User updatedUser = userRepository.save(existingUser);
         log.info("User with id {} updated successfully", id);
@@ -128,21 +133,25 @@ public class UserService implements IUserService {
 
     @Override
     public boolean existsByEmail(String email) {
+        log.info("Check existing user by email: {}", email);
         return userRepository.existsByEmail(email);
     }
 
     @Override
     public ResponseEntity<String> confirmEmail(String confirmationToken) {
+        log.info("Confirmation Email ");
         User user = userRepository.findByConfirmationToken(confirmationToken)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid token!"));
         user.setVerifiedAt(new Date());
         user.setEnabled(true);
+        user.setConfirmationToken(null);
         userRepository.save(user);
         return ResponseEntity.ok("Your Email confirmed successfully.");
     }
 
     @Override
     public void resetPassword(String email) throws MessagingException {
+        log.info("Reset Password  ");
         if (email == null) throw new
                 DataNotValidException(CustomerMessageError.EMAIL_IS_REQUIRED.getMessage());
         User user = userRepository.findByEmail(email.toLowerCase()).orElse(null);
@@ -165,7 +174,7 @@ public class UserService implements IUserService {
     public void changePassword(ChangePasswordDTO dto) {
         log.info("Change password : {}","********");
         User appUser = userRepository.findByResetPasswordToken(dto.getToken()).orElseThrow();
-        if (appUser != null) {
+        if ( appUser != null ) {
             if (appUser.getResetPasswordTokenExpiryDate() != null &&
                     appUser.getResetPasswordTokenExpiryDate().before(new Date())) {
                 throw new RuntimeException("Le jeton de réinitialisation de mot de passe a expiré.");
@@ -188,6 +197,30 @@ public class UserService implements IUserService {
                 CustomerMessageError.USER_NOT_FOUND_WITH_EMAIL_EQUALS.getMessage() + eRole
         ));
         user.getRoles().add(role);
+    }
+
+    @Override
+    public UserDTO activeUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new RoleNotFoundException(CustomerMessageError.USER_NOT_FOUND_WITH_ID_EQUALS.getMessage() + id));
+        if (user.getIsActive() == Active.ACTIVE) {
+            return UserMapper.userToDto(user);
+        }else{
+            user.setIsActive(Active.INACTIVE);
+            return UserMapper.userToDto(user);
+        }
+    }
+
+    @Override
+    public UserDTO inActiveUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new RoleNotFoundException(CustomerMessageError.USER_NOT_FOUND_WITH_ID_EQUALS.getMessage() + id));
+        if (user.getIsActive() == Active.INACTIVE) {
+            return UserMapper.userToDto(user);
+        }else{
+            user.setIsActive(Active.INACTIVE);
+            return UserMapper.userToDto(user);
+        }
     }
 
 }

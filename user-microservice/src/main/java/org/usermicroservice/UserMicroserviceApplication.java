@@ -49,7 +49,7 @@ public class UserMicroserviceApplication {
                     .email("oussama@gmail.com")
                     .numberPhone("0621403650")
                     .password("qwerty123")
-                    .roles(List.of(userRole))
+                    .roles(roleUser.stream().toList())
                     .isActive(Active.ACTIVE)
                     .build();
 
@@ -64,7 +64,7 @@ public class UserMicroserviceApplication {
                     .build();
 
             userService.registerUser(toUser);
-            userService.registerUser(v);
+            //userService.registerUser(v);
             userService.registerUser(u);
         };
 

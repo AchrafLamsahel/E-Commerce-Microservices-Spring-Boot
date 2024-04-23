@@ -27,14 +27,13 @@ public class InputValidatorRegister {
     }
 
     public static boolean isValidPassword(String password) {
-        String regex = "^(?=.*[A-Z]).{8,}$";
+        String regex = "^(?=.*[0-9])"
+                      + "(?=.*[a-z])(?=.*[A-Z])"
+                      + "(?=.*[@#$%^&+=])"
+                      + "(?=\\S+$).{8,20}$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(password);
-        return !matcher.matches();
-    }
-
-    public  boolean isEmailAlreadyExist(String email){
-        return false /*userRepository.existsByEmail(email)*/;
+        return matcher.matches();
     }
 
 }

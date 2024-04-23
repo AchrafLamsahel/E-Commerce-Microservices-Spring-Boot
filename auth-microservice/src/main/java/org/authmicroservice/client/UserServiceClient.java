@@ -1,13 +1,11 @@
 package org.authmicroservice.client;
 
 import jakarta.mail.MessagingException;
-import jdk.jfr.ContentType;
 import org.authmicroservice.dto.ChangePasswordDTO;
 import org.authmicroservice.dto.RegisterRequestDTO;
 import org.authmicroservice.dto.RegisterResponseDTO;
 import org.authmicroservice.dto.UserDTO;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
