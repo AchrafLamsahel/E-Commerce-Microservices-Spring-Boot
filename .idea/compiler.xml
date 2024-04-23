@@ -12,9 +12,7 @@
         <module name="order-microservice" />
         <module name="config-microservice" />
         <module name="gateway-microservice" />
-        <module name="auth-microservice" />
         <module name="user-microservice" />
-        <module name="payment-microservice" />
       </profile>
       <profile name="Annotation profile for catalogue-microservice" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -29,16 +27,22 @@
         <module name="catalogue-microservice" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="auth-microservice" target="1.5" />
+      <module name="paiment-microservice" target="17" />
+      <module name="payment-microservice" target="1.5" />
+      <module name="security-microservice" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="auth-microservice" options="-parameters" />
+      <module name="auth-microservice" options="" />
       <module name="catalogue-microservice" options="-parameters" />
       <module name="config-microservice" options="-parameters" />
       <module name="eureka-microservice" options="-parameters" />
       <module name="gateway-microservice" options="-parameters" />
       <module name="order-microservice" options="-parameters" />
-      <module name="payment-microservice" options="-parameters" />
+      <module name="payment-microservice" options="" />
       <module name="user-microservice" options="-parameters" />
     </option>
   </component>
