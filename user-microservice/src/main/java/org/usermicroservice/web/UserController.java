@@ -2,6 +2,7 @@ package org.usermicroservice.web;
 
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
+import org.apache.http.auth.AUTH;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.usermicroservice.dtos.ChangePasswordDTO;

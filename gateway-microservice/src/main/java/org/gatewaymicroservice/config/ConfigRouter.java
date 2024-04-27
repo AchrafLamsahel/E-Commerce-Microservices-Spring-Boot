@@ -6,7 +6,6 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import static org.gatewaymicroservice.constants.MSConstant.*;
 
 @Configuration
@@ -18,7 +17,7 @@ public class ConfigRouter {
     public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
 
-                .route(USER_MICROSERVICE, r -> r.path("/users/**")
+                .route(USER_MICROSERVICE, r -> r.path(USER_PATH)
                         .filters(f->f.filter(filter))
                         .uri(USER_MICROSERVICE_URI))
 
@@ -28,14 +27,14 @@ public class ConfigRouter {
                 .route(CATALOGUE_MICROSERVICE, r -> r.path("/categories/**")
                         .uri(CATALOGUE_MICROSERVICE_URI))
 
-                .route(PAYMENT_MICROSERVICE, r -> r.path("/payment/**")
+                .route(PAYMENT_MICROSERVICE, r -> r.path(PAYMENT_PATH)
                         .filters(f->f.filter(filter))
                         .uri(PAYMENT_MICROSERVICE_URI))
 
-                .route(ORDER_MICROSERVICE, r -> r.path("/order/**")
+                .route(ORDER_MICROSERVICE, r -> r.path(ORDER_PATH)
                         .uri(ORDER_MICROSERVICE_URI))
 
-                .route(AUTH_MICROSERVICE, r -> r.path("/auth/**")
+                .route(AUTH_MICROSERVICE, r -> r.path(AUTH_PATH)
                         .filters(f->f.filter(filter))
                         .uri(AUTH_MICROSERVICE_URI))
 

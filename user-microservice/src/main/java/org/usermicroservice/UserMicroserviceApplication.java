@@ -12,6 +12,8 @@ import org.usermicroservice.enums.ERole;
 import org.usermicroservice.repositories.RoleRepository;
 import org.usermicroservice.services.IUserService;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -39,14 +41,14 @@ public class UserMicroserviceApplication {
                     .email("achraflamsahel1@gmail.com")
                     .numberPhone("0621403650")
                     .password("qwerty123")
-                    .roles(List.of(userRole))
+                    .roles(Arrays.asList(roleAdmin.get(),roleUser.get()))
                     .isActive(Active.ACTIVE)
                     .build();
 
             User u = User.builder()
                     .firstname("Oussama")
                     .lastname("Bernek")
-                    .email("oussama@gmail.com")
+                    .email("ecommercemicroservice2024@gmail.com")
                     .numberPhone("0621403650")
                     .password("qwerty123")
                     .roles(roleUser.stream().toList())

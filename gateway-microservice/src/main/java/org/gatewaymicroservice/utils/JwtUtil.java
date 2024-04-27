@@ -1,5 +1,6 @@
 package org.gatewaymicroservice.utils;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -12,12 +13,13 @@ public class JwtUtil {
     @Value("${SECRET}")
     public String SECRET_KEY;
 
-    public void validateToken(final String token) {
-        Jwts
+    public Claims validateToken(final String token) {
+        return Jwts
                 .parserBuilder()
                 .setSigningKey(getSignKey())
                 .build()
-                .parseClaimsJws(token);
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     private Key getSignKey() {

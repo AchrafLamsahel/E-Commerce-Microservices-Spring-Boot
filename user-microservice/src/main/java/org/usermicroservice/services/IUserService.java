@@ -23,6 +23,6 @@ public interface IUserService {
     void resetPassword(String email) throws MessagingException;
     void changePassword(ChangePasswordDTO dto);
     void addRoleToUserByEmail(ERole eRole, String email);
-    UserDTO activeUser(Long id);
-    UserDTO inActiveUser(Long id);
+    void activeUser(Long id);
+    void inActiveUser(Long id);
 }

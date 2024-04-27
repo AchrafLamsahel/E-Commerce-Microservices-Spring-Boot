@@ -25,9 +25,8 @@ import org.usermicroservice.mappers.UserMapper;
 import org.usermicroservice.repositories.RoleRepository;
 import org.usermicroservice.repositories.UserRepository;
 import org.usermicroservice.utils.TokenGenerator;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,7 +66,9 @@ public class UserService implements IUserService {
     @Override
     public void registerUser(User user) throws MessagingException {
         log.info("Creating new user with email : {}", user.getEmail());
-        Role role= roleRepository.findByRole(ERole.valueOf(ERole.ADMIN.name())).orElseThrow(
+        Role role= roleRepository.findByRole(ERole.valueOf(ERole.USER.name())).orElseThrow(
+                () -> new RoleNotFoundException(CustomerMessageError.USER_NOT_FOUND_WITH_EMAIL_EQUALS.getMessage() + user.getEmail()));
+        Role userRole= roleRepository.findByRole(ERole.valueOf(ERole.ADMIN.name())).orElseThrow(
                 () -> new RoleNotFoundException(CustomerMessageError.USER_NOT_FOUND_WITH_EMAIL_EQUALS.getMessage() + user.getEmail()));
         User toSave = User.builder()
                 .firstname(user.getFirstname())
@@ -75,7 +76,7 @@ public class UserService implements IUserService {
                 .numberPhone(user.getNumberPhone())
                 .email(user.getEmail())
                 .password(passwordEncoder.encode(user.getPassword()))
-                .roles(List.of(role))
+                .roles(Arrays.asList(role,userRole))
                 .isActive(Active.ACTIVE)
                 .isEnabled(false)
                 .confirmationToken(TokenGenerator.generateToken())
@@ -200,26 +201,26 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserDTO activeUser(Long id) {
+    public void activeUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new RoleNotFoundException(CustomerMessageError.USER_NOT_FOUND_WITH_ID_EQUALS.getMessage() + id));
         if (user.getIsActive() == Active.ACTIVE) {
-            return UserMapper.userToDto(user);
+            UserMapper.userToDto(user);
         }else{
             user.setIsActive(Active.INACTIVE);
-            return UserMapper.userToDto(user);
+            UserMapper.userToDto(user);
         }
     }
 
     @Override
-    public UserDTO inActiveUser(Long id) {
+    public void inActiveUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new RoleNotFoundException(CustomerMessageError.USER_NOT_FOUND_WITH_ID_EQUALS.getMessage() + id));
         if (user.getIsActive() == Active.INACTIVE) {
-            return UserMapper.userToDto(user);
+            UserMapper.userToDto(user);
         }else{
             user.setIsActive(Active.INACTIVE);
-            return UserMapper.userToDto(user);
+            UserMapper.userToDto(user);
         }
     }
 
