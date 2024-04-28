@@ -10,6 +10,7 @@ import org.usermicroservice.entities.User;
 import org.usermicroservice.enums.Active;
 import org.usermicroservice.enums.ERole;
 import org.usermicroservice.repositories.RoleRepository;
+import org.usermicroservice.repositories.UserRepository;
 import org.usermicroservice.services.IUserService;
 
 import java.lang.reflect.Array;
@@ -33,15 +34,12 @@ public class UserMicroserviceApplication {
             Role userRole = new Role(ERole.USER);
             Role adminRole = new Role(ERole.ADMIN);
             roleRepository.saveAll(List.of(adminRole,userRole));
-            Optional<Role> roleUser= roleRepository.findByRole(ERole.USER);
-            Optional<Role> roleAdmin= roleRepository.findByRole(ERole.ADMIN);
             User toUser = User.builder()
                     .firstname("Achraf")
                     .lastname("Lamsahel")
                     .email("achraflamsahel1@gmail.com")
                     .numberPhone("0621403650")
                     .password("qwerty123")
-                    .roles(Arrays.asList(roleAdmin.get(),roleUser.get()))
                     .isActive(Active.ACTIVE)
                     .build();
 
@@ -51,23 +49,12 @@ public class UserMicroserviceApplication {
                     .email("ecommercemicroservice2024@gmail.com")
                     .numberPhone("0621403650")
                     .password("qwerty123")
-                    .roles(roleUser.stream().toList())
                     .isActive(Active.ACTIVE)
                     .build();
 
-            User v = User.builder()
-                    .firstname("Kawtar")
-                    .lastname("aberdane")
-                    .email("kaztar@gmail.com")
-                    .numberPhone("0621403650")
-                    .password("qwerty123")
-                    .roles(List.of(userRole))
-                    .isActive(Active.INACTIVE)
-                    .build();
-
             userService.registerUser(toUser);
-            //userService.registerUser(v);
             userService.registerUser(u);
+            userService.addRoleToUserByEmail(ERole.ADMIN,"achraflamsahel1@gmail.com");
         };
 
     }

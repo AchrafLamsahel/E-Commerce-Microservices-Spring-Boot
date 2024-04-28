@@ -1,7 +1,7 @@
 package org.gatewaymicroservice.config;
 
 import lombok.AllArgsConstructor;
-import org.gatewaymicroservice.filter.JwtAuthenticationFilter;
+import org.gatewaymicroservice.gatewayGlobalFilter.JwtAuthenticationFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -21,10 +21,10 @@ public class ConfigRouter {
                         .filters(f->f.filter(filter))
                         .uri(USER_MICROSERVICE_URI))
 
-                .route(CATALOGUE_MICROSERVICE, r -> r.path("/products/**")
+                .route(CATALOGUE_MICROSERVICE, r -> r.path(CATALOGUE_PRODUCTS_PATH)
                         .uri(CATALOGUE_MICROSERVICE_URI))
 
-                .route(CATALOGUE_MICROSERVICE, r -> r.path("/categories/**")
+                .route(CATALOGUE_MICROSERVICE, r -> r.path(CATALOGUE_CATEGORIES_PATH)
                         .uri(CATALOGUE_MICROSERVICE_URI))
 
                 .route(PAYMENT_MICROSERVICE, r -> r.path(PAYMENT_PATH)

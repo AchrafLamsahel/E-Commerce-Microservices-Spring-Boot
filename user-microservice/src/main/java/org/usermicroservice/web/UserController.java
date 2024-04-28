@@ -20,7 +20,6 @@ public class UserController {
 
     /**
      * path : (GET) --> http://localhost:8081/users/
-     * @return
      */
 
     @GetMapping("/")
@@ -29,7 +28,6 @@ public class UserController {
     }
     /**
      * path : (GET) --> http://localhost:8081/users/{id}
-     * @return
      */
 
 
@@ -45,7 +43,6 @@ public class UserController {
 
     /**
      * path : (GET) --> http://localhost:8081/users/getUserByEmail/{email}
-     * @return
      */
 
     @GetMapping("/getUserByEmail/{email}")
@@ -55,7 +52,6 @@ public class UserController {
 
     /**
      * path : (GET) --> http://localhost:8081/users/existsByEmail/{email}
-     * @return
      */
     @GetMapping("/existsByEmail/{email}")
     public boolean existsByEmail(@PathVariable String email) {
@@ -116,7 +112,6 @@ public class UserController {
 
     /**
      * path : (Delete) --> http://localhost:8081/users/admin/{id}
-     * @return
      */
     @DeleteMapping("/admin/{id}")
     public void deleteUserById(@PathVariable Long id) {

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 
 @Component
-public class JwtUtil {
+public class JwtUtils {
     @Value("${SECRET}")
     public String SECRET_KEY;
 

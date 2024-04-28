@@ -66,17 +66,15 @@ public class UserService implements IUserService {
     @Override
     public void registerUser(User user) throws MessagingException {
         log.info("Creating new user with email : {}", user.getEmail());
-        Role role= roleRepository.findByRole(ERole.valueOf(ERole.USER.name())).orElseThrow(
-                () -> new RoleNotFoundException(CustomerMessageError.USER_NOT_FOUND_WITH_EMAIL_EQUALS.getMessage() + user.getEmail()));
-        Role userRole= roleRepository.findByRole(ERole.valueOf(ERole.ADMIN.name())).orElseThrow(
-                () -> new RoleNotFoundException(CustomerMessageError.USER_NOT_FOUND_WITH_EMAIL_EQUALS.getMessage() + user.getEmail()));
+        Role userRole = roleRepository.findByRole(ERole.valueOf(ERole.USER.name())).orElseThrow(
+                () -> new RoleNotFoundException(CustomerMessageError.ROLE_NOT_FOUND_WITH_ROLE_EQUALS.getMessage() + ERole.USER.name()));
         User toSave = User.builder()
                 .firstname(user.getFirstname())
                 .lastname(user.getLastname())
                 .numberPhone(user.getNumberPhone())
                 .email(user.getEmail())
                 .password(passwordEncoder.encode(user.getPassword()))
-                .roles(Arrays.asList(role,userRole))
+                .roles(List.of(userRole))
                 .isActive(Active.ACTIVE)
                 .isEnabled(false)
                 .confirmationToken(TokenGenerator.generateToken())
@@ -111,7 +109,6 @@ public class UserService implements IUserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(
                         CustomerMessageError.USER_NOT_FOUND_WITH_ID_EQUALS.getMessage() + id));
-        //user.setEmail("###" + user.getEmail());
         user.setIsActive(Active.INACTIVE);
         userRepository.save(user);
     }
@@ -156,7 +153,7 @@ public class UserService implements IUserService {
         if (email == null) throw new
                 DataNotValidException(CustomerMessageError.EMAIL_IS_REQUIRED.getMessage());
         User user = userRepository.findByEmail(email.toLowerCase()).orElse(null);
-        if (user != null  && user.getVerifiedAt() != null && user.isEnabled()) {
+        if (user != null && user.getVerifiedAt() != null && user.isEnabled()) {
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.HOUR_OF_DAY, 24);
             Date expiryDate = calendar.getTime();
@@ -165,7 +162,7 @@ public class UserService implements IUserService {
             updateUser(user.getUserId(), user);
             UserDTO userDTO = UserMapper.userToDto(user);
             iMailService.sendResetPasswordMail(user.getEmail(),
-                    CustomerEmailMessage.RESET_PASSWORD_SUBJECT.getMessage(),userDTO);
+                    CustomerEmailMessage.RESET_PASSWORD_SUBJECT.getMessage(), userDTO);
         } else {
             throw new RuntimeException("No account found with this email address!");
         }
@@ -173,9 +170,9 @@ public class UserService implements IUserService {
 
     @Override
     public void changePassword(ChangePasswordDTO dto) {
-        log.info("Change password : {}","********");
+        log.info("Change password : {}", "********");
         User appUser = userRepository.findByResetPasswordToken(dto.getToken()).orElseThrow();
-        if ( appUser != null ) {
+        if (appUser != null) {
             if (appUser.getResetPasswordTokenExpiryDate() != null &&
                     appUser.getResetPasswordTokenExpiryDate().before(new Date())) {
                 throw new RuntimeException("Le jeton de réinitialisation de mot de passe a expiré.");
@@ -206,7 +203,7 @@ public class UserService implements IUserService {
                 () -> new RoleNotFoundException(CustomerMessageError.USER_NOT_FOUND_WITH_ID_EQUALS.getMessage() + id));
         if (user.getIsActive() == Active.ACTIVE) {
             UserMapper.userToDto(user);
-        }else{
+        } else {
             user.setIsActive(Active.INACTIVE);
             UserMapper.userToDto(user);
         }
@@ -218,7 +215,7 @@ public class UserService implements IUserService {
                 () -> new RoleNotFoundException(CustomerMessageError.USER_NOT_FOUND_WITH_ID_EQUALS.getMessage() + id));
         if (user.getIsActive() == Active.INACTIVE) {
             UserMapper.userToDto(user);
-        }else{
+        } else {
             user.setIsActive(Active.INACTIVE);
             UserMapper.userToDto(user);
         }

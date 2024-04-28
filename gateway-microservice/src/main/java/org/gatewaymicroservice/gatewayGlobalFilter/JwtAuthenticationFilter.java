@@ -1,10 +1,9 @@
-package org.gatewaymicroservice.filter;
+package org.gatewaymicroservice.gatewayGlobalFilter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
 import lombok.AllArgsConstructor;
+import org.gatewaymicroservice.rolesFilter.RoleFilter;
 import org.gatewaymicroservice.routerFilter.RouterValidator;
-import org.gatewaymicroservice.utils.JwtUtil;
+import org.gatewaymicroservice.utils.JwtUtils;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.http.HttpStatus;
@@ -17,9 +16,9 @@ import reactor.core.publisher.Mono;
 @Component
 @AllArgsConstructor
 public class JwtAuthenticationFilter implements GatewayFilter {
-    private final JwtUtil jwtUtil;
+    private final JwtUtils jwtUtils;
     private final RouterValidator routerValidator;
-    private final ObjectMapper objectMapper;
+    private final RoleFilter roleFilter;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -30,8 +29,8 @@ public class JwtAuthenticationFilter implements GatewayFilter {
             String token = request.getHeaders().getOrEmpty("Authorization").get(0);
             if (token != null && token.startsWith("Bearer ")) token = token.substring(7);
             try {
-                if (!filtersRoles(token, path)) return onError(null);
-                jwtUtil.validateToken(token);
+                if (!roleFilter.filtersRoles(token, path)) return onError(null);
+                jwtUtils.validateToken(token);
             } catch (Exception e) {
                 return onError(exchange);
             }
@@ -49,27 +48,6 @@ public class JwtAuthenticationFilter implements GatewayFilter {
         return !request.getHeaders().containsKey("Authorization");
     }
 
-    public boolean filtersRoles(String token, String path) {
-        Claims claims = jwtUtil.validateToken(token);
-        String iss = claims.get("iss", String.class);
-        int le = iss.length();
-        String role1 = iss.substring(20, 24);
-        String role2 = iss.substring(46, 51);
 
-        if (role1 == null) {
-            return false;
-        }
-        if (role2.equals("USER") && path.contains("/admin")) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Pattern pattern = Pattern.compile("role=([^,\\]]+)");
-     *         Matcher matcher = pattern.matcher(iss);
-     *         Boolean aBoolean = matcher.find();
-     *         String role = matcher.group(1);
-     */
 
 }

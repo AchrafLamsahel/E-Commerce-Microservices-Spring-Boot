@@ -15,7 +15,8 @@ public class MSConstant {
     public static final String PAYMENT_MICROSERVICE_URI  = "lb://payment-microservice";
     public static final String USER_MICROSERVICE_URI  = "lb://user-microservice";
 
-    public static final String CATALOGUE_PATH = "";
+    public static final String CATALOGUE_CATEGORIES_PATH = "/categories/**";
+    public static final String CATALOGUE_PRODUCTS_PATH = "/products/**";
     public static final String CONFIG_PATH  = "";
     public static final String AUTH_PATH  = "/auth/**";
     public static final String ORDER_PATH = "/order/**";
