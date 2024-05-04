@@ -39,7 +39,7 @@ public class SecurityConfig   {
         return new BCryptPasswordEncoder();
     }
 
-
+/**
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
@@ -50,4 +50,5 @@ public class SecurityConfig   {
             }
         };
     }
+    */
 }

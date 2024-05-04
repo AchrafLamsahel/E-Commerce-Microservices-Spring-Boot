@@ -1,6 +1,12 @@
 package org.gatewaymicroservice.constants;
 
 public class MSConstant {
+
+    public static final String LOCAL_DATE_FORMAT = "dd-MM-yyyy";
+    public static final String LOCAL_DATE_TIME_FORMAT = "dd-MM-yyyy__HH:mm:ss:SSSSSS";
+    public static final String ZONED_DATE_TIME_FORMAT = "dd-MM-yyyy__HH:mm:ss:SSSSSS";
+    public static final String INSTANT_FORMAT = "dd-MM-yyyy__HH:mm:ss:SSSSSS";
+
     public static final String CATALOGUE_MICROSERVICE = "catalogue-microservice";
     public static final String CONFIG_MICROSERVICE  = "config-microservice";
     public static final String AUTH_MICROSERVICE  = "auth-microservice";

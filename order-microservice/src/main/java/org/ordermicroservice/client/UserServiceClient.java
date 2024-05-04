@@ -12,4 +12,7 @@ public interface UserServiceClient {
     @GetMapping("/users/getUserByEmail/{email}")
     ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email);
 
+    @GetMapping("/users/{id}")
+    ResponseEntity<UserDTO> getUserByUserId(@PathVariable Long id);
+
 }

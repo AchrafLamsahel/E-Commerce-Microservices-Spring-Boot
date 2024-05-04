@@ -11,7 +11,7 @@ import org.usermicroservice.entities.User;
 import org.usermicroservice.enums.ERole;
 import org.usermicroservice.services.IUserService;
 import java.util.List;
-
+//@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/users")
 @AllArgsConstructor

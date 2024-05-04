@@ -6,8 +6,14 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import static org.gatewaymicroservice.constants.MSConstant.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.cors.reactive.CorsWebFilter;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+
+import static org.gatewaymicroservice.constants.MSConstant.*;
+//@CrossOrigin(origins = "http://localhost:4200",allowCredentials = "*")
 @Configuration
 @AllArgsConstructor
 public class ConfigRouter {
@@ -40,4 +46,6 @@ public class ConfigRouter {
 
                 .build();
     }
+
+
 }

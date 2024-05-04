@@ -1,10 +1,12 @@
 package org.cataloguemicroservice.services;
 
 import lombok.AllArgsConstructor;
+import org.cataloguemicroservice.dtos.ProductDTO;
 import org.cataloguemicroservice.entities.Product;
 import org.cataloguemicroservice.enums.CustomerMessageError;
 import org.cataloguemicroservice.exceptions.CategoryNotFoundException;
 import org.cataloguemicroservice.exceptions.ProductNotFoundException;
+import org.cataloguemicroservice.mappers.ProductMapper;
 import org.cataloguemicroservice.repositories.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductService implements IProductService{
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
     @Override
     public Product save(Product product) {
         product.setSlug(this.slugify(product.getLabel()));
@@ -26,8 +29,11 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<ProductDTO> getAllProducts() {
+        return productRepository.findAll()
+                .stream()
+                .map(productMapper::toDto)
+                .toList();
     }
 
     @Override

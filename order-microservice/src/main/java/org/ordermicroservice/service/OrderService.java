@@ -1,12 +1,16 @@
 package org.ordermicroservice.service;
 
 import lombok.RequiredArgsConstructor;
+import org.ordermicroservice.client.UserServiceClient;
+import org.ordermicroservice.dtos.OrderResponseDTO;
+import org.ordermicroservice.dtos.UserDTO;
 import org.ordermicroservice.entities.Order;
 import org.ordermicroservice.entities.OrderItem;
 import org.ordermicroservice.repository.OrderRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -16,14 +20,27 @@ import java.util.UUID;
 public class OrderService implements IOrderService {
     private final OrderRepository orderRepository;
     private final DecimalFormat decimalFormat;
+    private final UserServiceClient userServiceClient;
+    @Override
+    public List<OrderResponseDTO> findAllUserOrders() {
+        List<OrderResponseDTO> orderResponseDTOList = new ArrayList<>();
+        orderRepository.findAll().forEach(order -> {
+            OrderResponseDTO orderResponseDTO = new OrderResponseDTO();
+            orderResponseDTO.setOrder(order);
+            UserDTO userDTO = userServiceClient.getUserByUserId(order.getUserId()).getBody();
+            orderResponseDTO.setUser(userDTO);
+            orderResponseDTOList.add(orderResponseDTO);
+        });
+        return orderResponseDTOList;
+    }
 
     @Override
-    public List<Order> findAll(Long userId, Pageable pageable) {
+    public List<Order> findAllOrdersAuthenticated(Long userId, Pageable pageable) {
         return orderRepository.findAllByUserId(userId,pageable);
     }
 
     @Override
-    public Order find(String id) {
+    public Order findOrderByOrderId(String id) {
         return orderRepository.findById(id).orElseThrow();
     }
 

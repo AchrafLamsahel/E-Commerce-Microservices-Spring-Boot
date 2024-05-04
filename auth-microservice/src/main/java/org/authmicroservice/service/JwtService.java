@@ -7,12 +7,13 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service @AllArgsConstructor
 public class JwtService implements IJwtService {
@@ -23,10 +24,24 @@ public class JwtService implements IJwtService {
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER_STRING = "Authorization";
 
-    public String generateToken(String username) {
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+    public String generateToken(String email) {
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+        Collection<? extends GrantedAuthority> authorieze = userDetails.getAuthorities();
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userDetails);
+    }
+
+    public List<String> getRoles(String email) {
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+        List<String> roles = new ArrayList<>();
+        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+        Pattern pattern = Pattern.compile("role=(\\w+)");
+        Matcher matcher = pattern.matcher(authorities.toString());
+        while (matcher.find()) {
+            String role = matcher.group(1);
+            roles.add(role);
+        }
+        return roles;
     }
 
     public String createToken(Map<String, Object> claims, UserDetails userDetails) {

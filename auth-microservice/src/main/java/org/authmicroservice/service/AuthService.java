@@ -31,6 +31,7 @@ public class AuthService implements IAuthService {
                         .email(userDTO.getEmail())
                         .accessToken(jwtService.generateToken(request.getEmail()))
                         .refreshToken(jwtService.generateToken(request.getEmail()))
+                        .roles(jwtService.getRoles(request.getEmail()))
                         .build();
             } else {
                 throw new EmailOrPasswordIncorrectException("User is not Authenticated");

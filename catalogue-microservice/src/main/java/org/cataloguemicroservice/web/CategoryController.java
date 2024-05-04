@@ -3,20 +3,33 @@ package org.cataloguemicroservice.web;
 import lombok.AllArgsConstructor;
 import org.cataloguemicroservice.app.CategoryApp;
 import org.cataloguemicroservice.app.ProductApp;
+import org.cataloguemicroservice.dtos.CategoryDTO;
 import org.cataloguemicroservice.dtos.CategoryPageDTO;
 import org.cataloguemicroservice.dtos.ThreeCategory;
+import org.cataloguemicroservice.entities.Category;
+import org.cataloguemicroservice.services.ICategoryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/categories")
 @AllArgsConstructor
 public class CategoryController {
+    private static final Logger log = LoggerFactory.getLogger(CategoryController.class);
     private final CategoryApp categoryApp;
+    @Qualifier("ICategoryService")
+    private final ICategoryService iCategoryService;
 
-    /*
-            + Add Category + Update Category
-            + Activate and Inactivate Category
-    */
+    @GetMapping("/")
+    private List<Category> getAllCategories() {
+        log.info("allProducts");
+        return iCategoryService.getAllCategories();
+    }
+
 
     @GetMapping("/{pageNumber}/{pageSize}")
     private ThreeCategory handleCategories(@PathVariable Integer pageNumber, @PathVariable Integer pageSize, String sort) {
