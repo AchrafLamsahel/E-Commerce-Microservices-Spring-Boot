@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import lombok.AllArgsConstructor;
 import org.gatewaymicroservice.utils.JwtUtils;
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;

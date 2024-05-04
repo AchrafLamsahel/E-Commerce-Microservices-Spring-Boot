@@ -2,8 +2,6 @@ package org.cataloguemicroservice.web;
 
 import lombok.AllArgsConstructor;
 import org.cataloguemicroservice.app.CategoryApp;
-import org.cataloguemicroservice.app.ProductApp;
-import org.cataloguemicroservice.dtos.CategoryDTO;
 import org.cataloguemicroservice.dtos.CategoryPageDTO;
 import org.cataloguemicroservice.dtos.ThreeCategory;
 import org.cataloguemicroservice.entities.Category;
@@ -14,7 +12,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/categories")
 @AllArgsConstructor

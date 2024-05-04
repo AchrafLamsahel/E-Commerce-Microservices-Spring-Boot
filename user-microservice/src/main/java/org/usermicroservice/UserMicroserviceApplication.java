@@ -12,12 +12,7 @@ import org.usermicroservice.enums.ERole;
 import org.usermicroservice.repositories.RoleRepository;
 import org.usermicroservice.repositories.UserRepository;
 import org.usermicroservice.services.IUserService;
-
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @SpringBootApplication
 @AllArgsConstructor
@@ -43,7 +38,7 @@ public class UserMicroserviceApplication {
                     .isActive(Active.ACTIVE)
                     .build();
 
-            User u = User.builder()
+            User userOussama = User.builder()
                     .firstname("Oussama")
                     .lastname("Bernek")
                     .email("ecommercemicroservice2024@gmail.com")
@@ -53,8 +48,8 @@ public class UserMicroserviceApplication {
                     .build();
 
             userService.registerUser(toUser);
-            userService.registerUser(u);
             userService.addRoleToUserByEmail(ERole.ADMIN,"achraflamsahel1@gmail.com");
+            //userService.registerUser(userOussama);
         };
 
     }

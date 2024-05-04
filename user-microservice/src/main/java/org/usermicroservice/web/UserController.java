@@ -2,7 +2,6 @@ package org.usermicroservice.web;
 
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
-import org.apache.http.auth.AUTH;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.usermicroservice.dtos.ChangePasswordDTO;
@@ -11,7 +10,6 @@ import org.usermicroservice.entities.User;
 import org.usermicroservice.enums.ERole;
 import org.usermicroservice.services.IUserService;
 import java.util.List;
-//@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/users")
 @AllArgsConstructor
