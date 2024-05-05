@@ -2,6 +2,7 @@ package org.usermicroservice.web;
 
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.usermicroservice.dtos.ChangePasswordDTO;
@@ -20,7 +21,7 @@ public class UserController {
      * path : (GET) --> http://localhost:8081/users/
      */
 
-    @GetMapping("/")
+    @GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         return ResponseEntity.ok(iUserService.getAllUsers());
     }
@@ -29,12 +30,12 @@ public class UserController {
      */
 
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(iUserService.getUserById(id));
     }
 
-    @PostMapping("/register")
+    @PostMapping(value = "/register", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public void createUser(@RequestBody User user) throws MessagingException {
         iUserService.registerUser(user);
     }
@@ -43,7 +44,7 @@ public class UserController {
      * path : (GET) --> http://localhost:8081/users/getUserByEmail/{email}
      */
 
-    @GetMapping("/getUserByEmail/{email}")
+    @GetMapping(value = "/getUserByEmail/{email}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
         return ResponseEntity.ok(iUserService.getUserByEmail(email));
     }
@@ -51,7 +52,7 @@ public class UserController {
     /**
      * path : (GET) --> http://localhost:8081/users/existsByEmail/{email}
      */
-    @GetMapping("/existsByEmail/{email}")
+    @GetMapping(value = "/existsByEmail/{email}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public boolean existsByEmail(@PathVariable String email) {
         return iUserService.existsByEmail(email);
     }
@@ -61,48 +62,48 @@ public class UserController {
         return iUserService.confirmEmail(confirmationToken);
     }
 
-    @PostMapping("/recuperer-mot-de-passe")
+    @PostMapping(value = "/recuperer-mot-de-passe", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<String> handleResetPassword(@RequestParam("email") String email) throws MessagingException {
         iUserService.resetPassword(email);
         return ResponseEntity.ok("Un email de réinitialisation a été envoyé à " + email);
     }
 
-    @PostMapping("/changer-mot-de-passe")
+    @PostMapping(value = "/changer-mot-de-passe", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<String> handleChangePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
         iUserService.changePassword(changePasswordDTO);
         return ResponseEntity.ok("Le mot de passe a été changé avec succès");
     }
 
     /** -------------------------- ADMIN -----------------------------  */
-    @GetMapping("/admin/Active")
+    @GetMapping(value = "/admin/Active", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<List<UserDTO>> getAllUsersActive() {
         return ResponseEntity.ok(iUserService.getAllUsersActive());
     }
 
-    @GetMapping("/admin/InActive")
+    @GetMapping(value = "/admin/InActive", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserDTO>> getAllUsersInActive() {
         return ResponseEntity.ok(iUserService.getAllUserInActive());
     }
 
-    @PutMapping("/admin/{id}")
+    @PutMapping(value = "/admin/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody User user) {
         return ResponseEntity.ok(iUserService.updateUser(id, user));
     }
 
-    @PutMapping("/admin/add-role")
+    @PutMapping(value = "/admin/add-role", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<?> addRoleToUserByEmail(@RequestParam ERole eRole, @RequestParam String email) {
         iUserService.addRoleToUserByEmail(eRole, email);
         return ResponseEntity.ok("Role added successfully.");
     }
 
-    @PutMapping("/admin/{id}/activate")
+    @PutMapping(value = "/admin/{id}/activate", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<?> activateUser(@PathVariable Long id) {
         iUserService.activeUser(id);
         return ResponseEntity.ok("User activated successfully.");
     }
 
-    @PutMapping("/admin/{id}/deactivate")
+    @PutMapping(value = "/admin/{id}/deactivate", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<?> deactivateUser(@PathVariable Long id) {
         iUserService.inActiveUser(id);
         return ResponseEntity.ok("User deactivated successfully.");
@@ -111,7 +112,7 @@ public class UserController {
     /**
      * path : (Delete) --> http://localhost:8081/users/admin/{id}
      */
-    @DeleteMapping("/admin/{id}")
+    @DeleteMapping(value = "/admin/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public void deleteUserById(@PathVariable Long id) {
         iUserService.deleteUserById(id);
     }

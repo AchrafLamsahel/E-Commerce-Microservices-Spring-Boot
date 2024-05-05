@@ -5,6 +5,7 @@ import org.cataloguemicroservice.app.ProductApp;
 import org.cataloguemicroservice.dtos.ProductDTO;
 import org.cataloguemicroservice.dtos.ProductDetailsDTO;
 import org.cataloguemicroservice.services.IProductService;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -16,12 +17,12 @@ public class ProductController {
     private final IProductService productService;
 
 
-    @GetMapping("/")
+    @GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     private List<ProductDTO> getAllCategories() {
         return productService.getAllProducts();
     }
 
-    @GetMapping("/{productSlug}")
+    @GetMapping(value = "/{productSlug}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ProductDetailsDTO getProductBySlug(@PathVariable("productSlug") String productSlug) {
         return productApp.getProductBySlug(productSlug);
     }
