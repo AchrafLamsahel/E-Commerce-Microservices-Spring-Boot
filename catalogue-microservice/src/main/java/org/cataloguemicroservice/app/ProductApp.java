@@ -11,6 +11,7 @@ import org.cataloguemicroservice.services.IProductService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -26,28 +27,20 @@ public class ProductApp {
     }
 
     public ProductDetailsDTO getProductBySlug(String slug) {
-        ProductDetailsDTO productDetailsDTO = new ProductDetailsDTO();
         Product product = iProductService.getProductBySlug(slug);
         Category category = iCategoryService.getCategoryByIdParent(product.getIdCategory());
-        if (category.getIdParent() == 0) {
-            productDetailsDTO.setRootCategory(category);
-            productDetailsDTO.setProduct(product);
-            BreadcrumbDTO breadcrumbDTO = new BreadcrumbDTO("/" + category.getSlug() + "/" + product.getSlug(),
-                    category.getLabel() + product.getSlug());
-            productDetailsDTO.getBreadcrumbDTO().add(breadcrumbDTO);
-            return productDetailsDTO;
-        }
-        Category rootCategory = iCategoryService.getCategoryById(category.getIdParent());
-        productDetailsDTO.setRootCategory(rootCategory);
-        productDetailsDTO.setSubCategory(category);
-        productDetailsDTO.setProduct(product);
-        BreadcrumbDTO breadcrumbDTO = new BreadcrumbDTO("/" + rootCategory.getSlug(), rootCategory.getLabel());
-        BreadcrumbDTO breadcrumbDTO1 = new BreadcrumbDTO("/" + rootCategory.getSlug() + "/" + category.getSlug(), category.getSlug());
-        BreadcrumbDTO breadcrumbDTO2 = new BreadcrumbDTO("/" + rootCategory.getSlug() + "/" + category.getSlug() + "/" + product.getSlug(), product.getSlug());
-        productDetailsDTO.getBreadcrumbDTO().add(breadcrumbDTO);
-        productDetailsDTO.getBreadcrumbDTO().add(breadcrumbDTO1);
-        productDetailsDTO.getBreadcrumbDTO().add(breadcrumbDTO2);
+        Category rootCategory = category.getIdParent() == 0 ? category :
+                iCategoryService.getCategoryById(category.getIdParent());
+        BreadcrumbDTO rootBreadcrumb = new BreadcrumbDTO("/" + rootCategory.getSlug(), rootCategory.getLabel());
+        BreadcrumbDTO categoryBreadcrumb = new BreadcrumbDTO("/" + rootCategory.getSlug() + "/" + category.getSlug(), category.getSlug());
+        BreadcrumbDTO productBreadcrumb = new BreadcrumbDTO("/" + rootCategory.getSlug() + "/" + category.getSlug() + "/" + product.getSlug(), product.getSlug());
+        List<BreadcrumbDTO> breadcrumbs = new ArrayList<>();
+        breadcrumbs.add(rootBreadcrumb);
+        breadcrumbs.add(categoryBreadcrumb);
+        breadcrumbs.add(productBreadcrumb);
+        ProductDetailsDTO productDetailsDTO = new ProductDetailsDTO(rootCategory, category, product, breadcrumbs);
         return productDetailsDTO;
     }
+
 
 }

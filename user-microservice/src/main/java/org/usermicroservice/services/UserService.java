@@ -3,6 +3,10 @@ package org.usermicroservice.services;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import org.usermicroservice.dtos.ChangePasswordDTO;
+import org.usermicroservice.dtos.PageRequestDTO;
 import org.usermicroservice.dtos.UserDTO;
 import org.usermicroservice.emails.IMailService;
 import org.usermicroservice.entities.Role;
@@ -20,6 +25,7 @@ import org.usermicroservice.enums.CustomerMessageError;
 import org.usermicroservice.enums.ERole;
 import org.usermicroservice.exceptions.DataNotValidException;
 import org.usermicroservice.exceptions.RoleNotFoundException;
+import org.usermicroservice.exceptions.UserAlreadyConsistRoleException;
 import org.usermicroservice.exceptions.UserNotFoundException;
 import org.usermicroservice.mappers.UserMapper;
 import org.usermicroservice.repositories.RoleRepository;
@@ -43,6 +49,23 @@ public class UserService implements IUserService {
     public List<UserDTO> getAllUsers() {
         log.info("Get all users");
         return UserMapper.usersToUsersDto(userRepository.findAll());
+    }
+
+    @Override
+    public PageRequestDTO<User> getUsers(Integer pageNumber, Integer pageSize, String sort) {
+        Pageable pageable;
+        if (sort != null) {
+            pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.ASC, sort);
+        } else {
+            pageable = PageRequest.of(pageNumber, pageSize);
+        }
+        Page<User> productPage = userRepository.findAll(pageable);
+        return new PageRequestDTO<>(
+                productPage.getContent(),
+                productPage.getNumber(),
+                productPage.getTotalPages(),
+                (int) productPage.getTotalElements()
+        );
     }
 
     @Override
@@ -114,7 +137,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserDTO updateUser(Long id, User user) {
+    public void updateUser(Long id, User user) throws MessagingException {
         log.info("Updating user with id: {}", id);
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(
@@ -122,11 +145,11 @@ public class UserService implements IUserService {
         existingUser.setFirstname(user.getFirstname());
         existingUser.setLastname(user.getLastname());
         existingUser.setNumberPhone(user.getNumberPhone());
-        //existingUser.setEmail(user.getEmail());
         existingUser.setPassword(user.getPassword());
-        User updatedUser = userRepository.save(existingUser);
+        existingUser.setEmail(user.getEmail());
+        existingUser.setPassword(user.getPassword());
+        this.registerUser(existingUser);
         log.info("User with id {} updated successfully", id);
-        return UserMapper.userToDto(updatedUser);
     }
 
     @Override
@@ -169,7 +192,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void changePassword(ChangePasswordDTO dto) {
+    public void changePassword(ChangePasswordDTO dto) throws MessagingException {
         log.info("Change password : {}", "********");
         User appUser = userRepository.findByResetPasswordToken(dto.getToken()).orElseThrow();
         if (appUser != null) {
@@ -194,6 +217,8 @@ public class UserService implements IUserService {
         Role role = roleRepository.findByRole(eRole).orElseThrow(() -> new RoleNotFoundException(
                 CustomerMessageError.USER_NOT_FOUND_WITH_EMAIL_EQUALS.getMessage() + eRole
         ));
+        if( user.getRoles().contains(role))
+            throw new UserAlreadyConsistRoleException(CustomerMessageError.USER_ALREADY_HAS_ROLE_ROLE.getMessage() + role.getRole());
         user.getRoles().add(role);
     }
 

@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface ProductRepository  extends BaseRepositories<Product,Long> {
     List<Product> findProductsByIdCategory(Long idCategory);
+    boolean existsByProductId(Long id);
 }

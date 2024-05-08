@@ -1,21 +1,28 @@
 package org.usermicroservice.web;
 
 import jakarta.mail.MessagingException;
+import jakarta.ws.rs.PathParam;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.usermicroservice.converter.RoleEnumConverter;
+import org.usermicroservice.dtos.AddRoleRequestDTO;
 import org.usermicroservice.dtos.ChangePasswordDTO;
+import org.usermicroservice.dtos.PageRequestDTO;
 import org.usermicroservice.dtos.UserDTO;
 import org.usermicroservice.entities.User;
 import org.usermicroservice.enums.ERole;
 import org.usermicroservice.services.IUserService;
+
 import java.util.List;
+
 @RestController
 @RequestMapping("/users")
 @AllArgsConstructor
 public class UserController {
     private final IUserService iUserService;
+    private final RoleEnumConverter roleEnumConverter;
 
     /**
      * path : (GET) --> http://localhost:8081/users/
@@ -25,6 +32,7 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         return ResponseEntity.ok(iUserService.getAllUsers());
     }
+
     /**
      * path : (GET) --> http://localhost:8081/users/{id}
      */
@@ -49,6 +57,11 @@ public class UserController {
         return ResponseEntity.ok(iUserService.getUserByEmail(email));
     }
 
+    @GetMapping(value = "/{pageNumber}/{pageSize}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    private PageRequestDTO<User> pagination(@PathVariable Integer pageNumber, @PathVariable Integer pageSize, String sort) {
+        return iUserService.getUsers(pageNumber, pageSize, sort);
+    }
+
     /**
      * path : (GET) --> http://localhost:8081/users/existsByEmail/{email}
      */
@@ -69,31 +82,33 @@ public class UserController {
     }
 
     @PostMapping(value = "/changer-mot-de-passe", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<String> handleChangePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
+    public ResponseEntity<String> handleChangePassword(@RequestBody ChangePasswordDTO changePasswordDTO) throws MessagingException {
         iUserService.changePassword(changePasswordDTO);
         return ResponseEntity.ok("Le mot de passe a été changé avec succès");
     }
 
-    /** -------------------------- ADMIN -----------------------------  */
+    /**
+     * -------------------------- ADMIN -----------------------------
+     */
     @GetMapping(value = "/admin/Active", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<List<UserDTO>> getAllUsersActive() {
         return ResponseEntity.ok(iUserService.getAllUsersActive());
     }
 
     @GetMapping(value = "/admin/InActive", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserDTO>> getAllUsersInActive() {
         return ResponseEntity.ok(iUserService.getAllUserInActive());
     }
 
     @PutMapping(value = "/admin/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody User user) {
-        return ResponseEntity.ok(iUserService.updateUser(id, user));
+    public void updateUser(@PathVariable Long id, @RequestBody User user) throws MessagingException {
+        iUserService.updateUser(id, user);
     }
 
-    @PutMapping(value = "/admin/add-role", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<?> addRoleToUserByEmail(@RequestParam ERole eRole, @RequestParam String email) {
-        iUserService.addRoleToUserByEmail(eRole, email);
+    @PostMapping(value = "/admin/add-role", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<?> addRoleToUserByEmail(@RequestBody AddRoleRequestDTO addRoleRequestDTO) {
+        ERole role =roleEnumConverter.convert(addRoleRequestDTO.getERole());
+        iUserService.addRoleToUserByEmail(role, addRoleRequestDTO.getEmail());
         return ResponseEntity.ok("Role added successfully.");
     }
 

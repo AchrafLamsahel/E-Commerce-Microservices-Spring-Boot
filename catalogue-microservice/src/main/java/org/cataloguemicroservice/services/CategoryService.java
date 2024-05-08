@@ -3,11 +3,15 @@ package org.cataloguemicroservice.services;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.cataloguemicroservice.dtos.CategoriesTree;
+import org.cataloguemicroservice.dtos.PageRequestDTO;
 import org.cataloguemicroservice.dtos.ThreeCategory;
 import org.cataloguemicroservice.entities.Category;
 import org.cataloguemicroservice.entities.Product;
 import org.cataloguemicroservice.enums.CustomerMessageError;
+import org.cataloguemicroservice.exceptions.CategoryAlreadyExistException;
+import org.cataloguemicroservice.exceptions.CategoryEmptyException;
 import org.cataloguemicroservice.exceptions.CategoryNotFoundException;
+import org.cataloguemicroservice.exceptions.ProductNotFoundException;
 import org.cataloguemicroservice.repositories.CategoryRepository;
 import org.cataloguemicroservice.repositories.ProductRepository;
 import org.springframework.data.domain.Page;
@@ -33,8 +37,48 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
+    public void delete(Long id) {
+        Category category =categoryRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(
+                        CustomerMessageError.CATEGORY_PARENT_NOT_FOUND_WITH_ID_EQUALS.getMessage() + id));
+        categoryRepository.delete(category);
+    }
+
+
+    @Override
+    public void Add(Category category) {
+        if(category.getCategoryId() == null)
+            throw new CategoryEmptyException(CustomerMessageError.CATEGORY_INPUT_IS_EMPTY.getMessage());
+        if( productRepository.existsByProductId(category.getCategoryId()))
+            throw new CategoryAlreadyExistException(CustomerMessageError.CATEGORY_ALREADY_EXISTS_WITH_ID_EQUALS.getMessage()+category.getCategoryId());
+        this.save(category);
+    }
+
+    @Override
+    public void Update(Long id, Category p) {
+        if(id == null) throw new RuntimeException("Id not Valid  " +id);
+        Category category =categoryRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(
+                        CustomerMessageError.CATEGORY_PARENT_NOT_FOUND_WITH_ID_EQUALS.getMessage() + id));
+        category.setCategoryId(p.getCategoryId());
+        category.setCategoryTitle(p.getCategoryTitle());
+        category.setLabel(p.getLabel());
+        category.setDescription(p.getDescription());
+        category.setIdParent(p.getIdParent());
+        category.setImageUrl(p.getImageUrl());
+        category.setValid(p.isValid());
+        this.save(category);
+    }
+
+    @Override
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
+    }
+
+    @Override
+    public List<Page<Category>> findAllCategoriesPageable(Pageable pageable) {
+        Pageable pageable1 = PageRequest.of(0,4);
+        return List.of(categoryRepository.findAll(pageable1));
     }
 
     @Override
@@ -89,17 +133,20 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public Page<Product> getCategoryPagination(Integer pageNumber, Integer pageSize, String sort) {
-        Pageable pageable = null;
+    public PageRequestDTO<Category> getCategoryPagination(Integer pageNumber, Integer pageSize, String sort) {
+        Pageable pageable;
         if (sort != null) {
-            // with sorting
             pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.ASC, sort);
         } else {
             pageable = PageRequest.of(pageNumber, pageSize);
         }
-        return productRepository.findAll(pageable);
+        Page<Category> productPage = categoryRepository.findAll(pageable);
+        return new PageRequestDTO<>(
+                productPage.getContent(),
+                productPage.getNumber(),
+                productPage.getTotalPages(),
+                (int) productPage.getTotalElements()
+        );
     }
-
-
 
 }
