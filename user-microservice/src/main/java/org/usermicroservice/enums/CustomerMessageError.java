@@ -30,7 +30,8 @@ public enum CustomerMessageError {
     PHONE_NUMBER_NOT_VALID("Phone Number Not Valid"),
     INVALID_REQUEST("Invalid request."),
     ROLE_NOT_FOUND_WITH_ROLE_EQUALS("Role Not found with role =  "),
-    PASSWORDS_DO_NOT_MATCH("Passwords do not match.");
+    PASSWORDS_DO_NOT_MATCH("Passwords do not match."),
+    USER_ALREADY_HAS_ROLE_ROLE("User already has role =  ");
 
     private final String msg;
     CustomerMessageError(String msg){

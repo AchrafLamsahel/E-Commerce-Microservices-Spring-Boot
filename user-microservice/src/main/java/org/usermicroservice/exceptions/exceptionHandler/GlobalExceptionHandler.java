@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(EmailAlreadyExist.class)
-    public ResponseEntity<?> handleUserNotFound(EmailAlreadyExist ex) {
+    public ResponseEntity<?> handleEmailAlreadyExist(EmailAlreadyExist ex) {
         ErrorBodyDTO errorBodyDTO = new ErrorBodyDTO(new Date(), HttpStatus.NOT_FOUND, Collections.singletonList(ex.getMessage()));
         return new ResponseEntity<>(errorBodyDTO, errorBodyDTO.getStatus());
     }
@@ -38,6 +38,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<?> handleUserNotFound(UserNotFoundException ex) {
         ErrorBodyDTO errorBodyDTO = new ErrorBodyDTO(new Date(), HttpStatus.NOT_FOUND, Collections.singletonList(ex.getMessage()));
+        return new ResponseEntity<>(errorBodyDTO, errorBodyDTO.getStatus());
+    }
+
+    @ExceptionHandler(UserAlreadyConsistRoleException.class)
+    public ResponseEntity<?> handleUserAlreadyConsistRole(UserAlreadyConsistRoleException ex) {
+        ErrorBodyDTO errorBodyDTO = new ErrorBodyDTO(new Date(), HttpStatus.ALREADY_REPORTED, Collections.singletonList(ex.getMessage()));
         return new ResponseEntity<>(errorBodyDTO, errorBodyDTO.getStatus());
     }
 
