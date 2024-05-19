@@ -3,11 +3,15 @@ package org.ordermicroservice.service;
 import lombok.RequiredArgsConstructor;
 import org.ordermicroservice.client.UserServiceClient;
 import org.ordermicroservice.dtos.OrderResponseDTO;
+import org.ordermicroservice.dtos.PageRequestDTO;
 import org.ordermicroservice.dtos.UserDTO;
 import org.ordermicroservice.entities.Order;
 import org.ordermicroservice.entities.OrderItem;
 import org.ordermicroservice.repository.OrderRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -32,6 +36,23 @@ public class OrderService implements IOrderService {
             orderResponseDTOList.add(orderResponseDTO);
         });
         return orderResponseDTOList;
+    }
+
+    @Override
+    public PageRequestDTO<Order> getAllOrdersPagination(Integer pageNumber, Integer pageSize, String sort) {
+        Pageable pageable;
+        if (sort != null) {
+            pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.ASC, sort);
+        } else {
+            pageable = PageRequest.of(pageNumber, pageSize);
+        }
+        Page<Order> orderPage = orderRepository.findAll(pageable);
+        return new PageRequestDTO<>(
+                orderPage.getContent(),
+                orderPage.getNumber(),
+                orderPage.getTotalPages(),
+                (int) orderPage.getTotalElements()
+        );
     }
 
     @Override

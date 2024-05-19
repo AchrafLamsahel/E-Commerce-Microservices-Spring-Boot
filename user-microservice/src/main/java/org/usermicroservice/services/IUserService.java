@@ -1,14 +1,12 @@
 package org.usermicroservice.services;
 
 import jakarta.mail.MessagingException;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.usermicroservice.dtos.ChangePasswordDTO;
 import org.usermicroservice.dtos.PageRequestDTO;
 import org.usermicroservice.dtos.UserDTO;
 import org.usermicroservice.entities.User;
 import org.usermicroservice.enums.ERole;
-
 import java.util.List;
 
 public interface IUserService {

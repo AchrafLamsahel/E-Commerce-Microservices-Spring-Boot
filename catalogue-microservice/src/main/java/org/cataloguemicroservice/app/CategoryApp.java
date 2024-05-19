@@ -47,4 +47,20 @@ public class CategoryApp {
         return new CategoryPageDTO(rootCategory, subCategories, productList, breadcrumbs);
     }
 
+    public CategoryPageDTO getCategoryLabel(String label) {
+        Category category = iCategoryService.getCategoryByLabel(label);
+        Category rootCategory = category.getIdParent() == 0 ?
+                category : iCategoryService.getCategoryById(category.getIdParent());
+        List<Category> subCategories = category.getIdParent() == 0 ?
+                categoryRepository.findCategoriesByIdParent(category.getCategoryId()) : List.of(category);
+        List<Product> productList = category.getIdParent() != 0 ?
+                iProductService.getProductById(category.getCategoryId()) : Collections.emptyList();
+        BreadcrumbDTO rootBreadcrumb = new BreadcrumbDTO("/" + rootCategory.getSlug(), rootCategory.getLabel());
+        BreadcrumbDTO categoryBreadcrumb = new BreadcrumbDTO("/" + rootCategory.getSlug() + "/" + category.getSlug(), category.getLabel());
+        List<BreadcrumbDTO> breadcrumbs = new ArrayList<>();
+        breadcrumbs.add(rootBreadcrumb);
+        breadcrumbs.add(categoryBreadcrumb);
+        return new CategoryPageDTO(rootCategory, subCategories, productList, breadcrumbs);
+    }
+
 }

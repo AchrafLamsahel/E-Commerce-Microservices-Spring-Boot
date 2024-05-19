@@ -9,11 +9,11 @@ import java.util.List;
 
 
 public interface IProductService extends BaseService<Product> {
+    Product findById(Long id);
     List<ProductDTO> getAllProducts();
     List<Product> getProductById(Long id);
     Product getProductBySlug(String slug);
     Product getProductByLabel(String label);
     Page<Product> getProductPagination(Integer pageNumber, Integer pageSize, String sort);
     PageRequestDTO<Product> getCategoryPagination(Integer pageNumber, Integer pageSize, String sort);
-
 }

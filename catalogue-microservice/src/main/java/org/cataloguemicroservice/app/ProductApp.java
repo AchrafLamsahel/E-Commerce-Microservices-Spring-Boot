@@ -38,8 +38,22 @@ public class ProductApp {
         breadcrumbs.add(rootBreadcrumb);
         breadcrumbs.add(categoryBreadcrumb);
         breadcrumbs.add(productBreadcrumb);
-        ProductDetailsDTO productDetailsDTO = new ProductDetailsDTO(rootCategory, category, product, breadcrumbs);
-        return productDetailsDTO;
+        return new ProductDetailsDTO(rootCategory, category, product, breadcrumbs);
+    }
+
+    public ProductDetailsDTO getProductByLabel(String slug) {
+        Product product = iProductService.getProductByLabel(slug);
+        Category category = iCategoryService.getCategoryByIdParent(product.getIdCategory());
+        Category rootCategory = category.getIdParent() == 0 ? category :
+                iCategoryService.getCategoryById(category.getIdParent());
+        BreadcrumbDTO rootBreadcrumb = new BreadcrumbDTO("/" + rootCategory.getSlug(), rootCategory.getLabel());
+        BreadcrumbDTO categoryBreadcrumb = new BreadcrumbDTO("/" + rootCategory.getSlug() + "/" + category.getSlug(), category.getSlug());
+        BreadcrumbDTO productBreadcrumb = new BreadcrumbDTO("/" + rootCategory.getSlug() + "/" + category.getSlug() + "/" + product.getSlug(), product.getSlug());
+        List<BreadcrumbDTO> breadcrumbs = new ArrayList<>();
+        breadcrumbs.add(rootBreadcrumb);
+        breadcrumbs.add(categoryBreadcrumb);
+        breadcrumbs.add(productBreadcrumb);
+        return  new ProductDetailsDTO(rootCategory, category, product, breadcrumbs);
     }
 
 

@@ -60,9 +60,7 @@ public class OrderMicroserviceApplication {
             item2.setPrice("29.99");
             item2.setQty(1);
             items.add(item2);
-
             order.setItems(items);
-
             order.setDate(new Date());
             order.setTotalPrice(69.97);
             orderService.save(order);

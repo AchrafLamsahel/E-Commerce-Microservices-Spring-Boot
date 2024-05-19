@@ -14,6 +14,7 @@ import org.ordermicroservice.repository.OrderRepository;
 import org.ordermicroservice.service.OrderService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,11 @@ public class OrderController {
     @GetMapping("/allOrders")
     private List<OrderResponseDTO> handleGetOrdersUsers() {
         return orderService.findAllUserOrders();
+    }
+
+    @GetMapping(value = "/{pageNumber}/{pageSize}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    private PageRequestDTO<Order> pagination(@PathVariable Integer pageNumber, @PathVariable Integer pageSize, String sort) {
+        return orderService.getAllOrdersPagination(pageNumber, pageSize, sort);
     }
 
     @GetMapping

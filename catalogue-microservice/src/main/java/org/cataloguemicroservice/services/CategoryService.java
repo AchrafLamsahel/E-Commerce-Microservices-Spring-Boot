@@ -46,7 +46,7 @@ public class CategoryService implements ICategoryService {
 
 
     @Override
-    public void Add(Category category) {
+    public void add(Category category) {
         if(category.getCategoryId() == null)
             throw new CategoryEmptyException(CustomerMessageError.CATEGORY_INPUT_IS_EMPTY.getMessage());
         if( productRepository.existsByProductId(category.getCategoryId()))
@@ -55,7 +55,7 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public void Update(Long id, Category p) {
+    public void update(Long id, Category p) {
         if(id == null) throw new RuntimeException("Id not Valid  " +id);
         Category category =categoryRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(
@@ -68,6 +68,13 @@ public class CategoryService implements ICategoryService {
         category.setImageUrl(p.getImageUrl());
         category.setValid(p.isValid());
         this.save(category);
+    }
+
+    @Override
+    public Category findById(Long id) {
+        return categoryRepository.findById(id).orElseThrow(
+                ()->new CategoryNotFoundException(CustomerMessageError.CATEGORY_NOT_FOUND_WITH_ID_EQUALS.getMessage()+id)
+        );
     }
 
     @Override

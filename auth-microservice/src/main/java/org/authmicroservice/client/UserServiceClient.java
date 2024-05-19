@@ -28,6 +28,6 @@ public interface UserServiceClient {
     ResponseEntity<String> handleResetPassword(@RequestParam("email") String email) throws MessagingException;
 
     @PostMapping("/users/changer-mot-de-passe")
-    ResponseEntity<String> handleChangePassword( @RequestBody ChangePasswordDTO changePasswordDTO );
+    ResponseEntity<String> handleChangePassword(@RequestBody ChangePasswordDTO changePasswordDTO);
 
 }

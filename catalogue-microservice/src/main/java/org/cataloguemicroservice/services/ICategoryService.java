@@ -12,6 +12,7 @@ import java.util.List;
 
 @Service
 public interface ICategoryService extends BaseService<Category> {
+    Category findById(Long id);
     List<Category> getAllCategories();
     List<Page<Category>> findAllCategoriesPageable(Pageable pageable);
     Category getCategoryById(Long id);

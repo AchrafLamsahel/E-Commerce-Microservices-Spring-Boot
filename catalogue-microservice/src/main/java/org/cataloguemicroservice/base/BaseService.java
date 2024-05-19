@@ -7,8 +7,8 @@ public interface BaseService<T> {
 
     T save(T p);
     void delete(Long id);
-    void Add(T w);
-    void Update(Long id, T p);
+    void add(T w);
+    void update(Long id, T p);
 
     default String slugify(final String s) {
         final String intermediateResult = Normalizer

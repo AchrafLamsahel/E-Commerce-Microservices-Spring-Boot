@@ -39,7 +39,7 @@ public class ProductService implements IProductService{
 
 
     @Override
-    public void Add(Product product) {
+    public void add(Product product) {
         if(product.getProductId() == null)
             throw new ProductEmptyException(CustomerMessageError.PRODUCT_INPUT_IS_EMPTY.getMessage());
         if( productRepository.existsByProductId(product.getProductId()))
@@ -48,7 +48,7 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public void Update(Long id, Product p) {
+    public void update(Long id, Product p) {
         Product product =productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(
                         CustomerMessageError.PRODUCT_NOT_FOUND_WITH_ID_EQUALS.getMessage() + id));
@@ -61,6 +61,13 @@ public class ProductService implements IProductService{
         product.setLabel(p.getLabel());
         product.setPrice(p.getPrice());
         this.save(product);
+    }
+
+    @Override
+    public Product findById(Long id) {
+        return productRepository.findById(id).orElseThrow(
+                ()->new CategoryNotFoundException(CustomerMessageError.PRODUCT_NOT_FOUND_WITH_ID_EQUALS.getMessage()+id)
+        );
     }
 
     @Override
