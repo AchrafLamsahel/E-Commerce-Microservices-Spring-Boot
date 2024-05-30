@@ -6,6 +6,7 @@ import org.cataloguemicroservice.dtos.CategoryPageDTO;
 import org.cataloguemicroservice.dtos.ThreeCategory;
 import org.cataloguemicroservice.entities.Category;
 import org.cataloguemicroservice.entities.Product;
+import org.cataloguemicroservice.mappers.CategoryMapper;
 import org.cataloguemicroservice.repositories.CategoryRepository;
 import org.cataloguemicroservice.repositories.ProductRepository;
 import org.cataloguemicroservice.services.ICategoryService;
@@ -24,10 +25,12 @@ public class CategoryApp {
     private final ICategoryService iCategoryService;
     private final IProductService iProductService;
     private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
 
     public ThreeCategory getIndex(Integer pageNumber, Integer pageSize, String sort) {
         ThreeCategory threeCategory = new ThreeCategory();
         threeCategory.setCategoriesTrees(iCategoryService.getHierarchyCategories().getCategoriesTrees());
+        threeCategory.setAllProductsPage(iProductService.getCategoryPagination(pageNumber,pageSize,sort));
         return threeCategory;
     }
 

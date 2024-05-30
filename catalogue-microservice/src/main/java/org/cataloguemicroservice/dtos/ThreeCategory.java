@@ -14,6 +14,5 @@ import java.util.List;
 @NoArgsConstructor
 public class ThreeCategory {
     private List<CategoriesTree> categoriesTrees = new ArrayList<>();
-    private Page<Product> allProductsPage;
-
+    private PageRequestDTO<Product> allProductsPage;
 }

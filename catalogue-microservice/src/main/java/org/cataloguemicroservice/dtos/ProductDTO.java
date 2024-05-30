@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.index.Indexed;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductDTO {
-
     private Long productId;
     private String label;
     private String slug;

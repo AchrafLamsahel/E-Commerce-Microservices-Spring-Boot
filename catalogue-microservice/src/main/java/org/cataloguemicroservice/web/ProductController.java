@@ -26,12 +26,12 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
-    @GetMapping(value = "/{productSlug}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @GetMapping(value = "/slug/{productSlug}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ProductDetailsDTO getProductBySlug(@PathVariable("productSlug") String productSlug) {
         return productApp.getProductBySlug(productSlug);
     }
 
-    //@GetMapping(value = "/{productLabel}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @GetMapping(value = "/label/{productLabel}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ProductDetailsDTO getProductByLabel(@PathVariable("productLabel") String productLabel) {
         return productApp.getProductByLabel(productLabel);
     }

@@ -46,12 +46,12 @@ public class CategoryController {
         return iCategoryService.getCategoryPagination(pageNumber, pageSize, sort);
     }
 
-    @GetMapping(value = "/{categorySlug}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @GetMapping(value = "/slug/{categorySlug}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public CategoryPageDTO getCategoryBySlug(@PathVariable("categorySlug") String categorySlug) {
         return categoryApp.getCategorySlug(categorySlug);
     }
 
-    @GetMapping(value = "/{categoryLabel}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @GetMapping(value = "/label/{categoryLabel}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public CategoryPageDTO getCategoryByLabel(@PathVariable("categoryLabel") String categoryLabel) {
         return categoryApp.getCategoryLabel(categoryLabel);
     }
