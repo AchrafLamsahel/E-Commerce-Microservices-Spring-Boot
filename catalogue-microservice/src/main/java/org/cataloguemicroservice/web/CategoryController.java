@@ -73,8 +73,6 @@ public class CategoryController {
         iCategoryService.delete(id);
     }
 
-
-
     /**
      * String urlParams = request.pathVariable("categorySlug");
      * String[] segments = urlParams.split("/");

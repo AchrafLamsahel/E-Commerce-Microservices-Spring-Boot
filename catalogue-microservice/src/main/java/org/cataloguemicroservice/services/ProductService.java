@@ -2,18 +2,23 @@ package org.cataloguemicroservice.services;
 
 import lombok.AllArgsConstructor;
 import org.cataloguemicroservice.dtos.PageRequestDTO;
+import org.cataloguemicroservice.dtos.PageResponseDTO;
 import org.cataloguemicroservice.dtos.ProductDTO;
+import org.cataloguemicroservice.dtos.ProductInfDTO;
 import org.cataloguemicroservice.entities.Category;
 import org.cataloguemicroservice.entities.Product;
 import org.cataloguemicroservice.enums.CustomerMessageError;
 import org.cataloguemicroservice.exceptions.*;
 import org.cataloguemicroservice.mappers.ProductMapper;
+import org.cataloguemicroservice.repositories.CategoryRepository;
 import org.cataloguemicroservice.repositories.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +27,8 @@ import java.util.List;
 public class ProductService implements IProductService{
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final CategoryRepository categoryRepository;
+
     @Override
     public Product save(Product product) {
         product.setSlug(this.slugify(product.getLabel()));
@@ -123,11 +130,50 @@ public class ProductService implements IProductService{
             pageable = PageRequest.of(pageNumber, pageSize);
         }
         Page<Product> productPage = productRepository.findAll(pageable);
+        if (productPage.hasContent()) {
+            // Fetch the first product to determine the category
+            Product firstProduct = productPage.getContent().get(0);
+
+            // Retrieve the subcategory
+            Category subCategory = categoryRepository.findById(firstProduct.getIdCategory())
+                    .orElseThrow(() -> new RuntimeException("SubCategory not found"));
+
+            // Retrieve the root category
+            Category rootCategory = categoryRepository.findById(subCategory.getIdParent())
+                    .orElseThrow(() -> new RuntimeException("RootCategory not found"));
         return new PageRequestDTO<>(
                 productPage.getContent(),
                 productPage.getNumber(),
                 productPage.getTotalPages(),
                 (int) productPage.getTotalElements()
         );
+    }
+        return null;
+    }
+
+    @Override
+    public PageResponseDTO getProductInf(Integer pageNumber, Integer pageSize, String sort) {
+        List<ProductInfDTO> productInfDTOList = new ArrayList<>();
+        Pageable pageable;
+        if (sort != null) {
+            pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.ASC, sort);
+        } else {
+            pageable = PageRequest.of(pageNumber, pageSize);
+        }
+        Page<Product> productPage = productRepository.findAll(pageable);
+        List<Product> productList = productRepository.findAll(pageable).toList();
+        productList.forEach(product -> {
+            Category subCategory = categoryRepository.findById(product.getIdCategory())
+                    .orElseThrow(() -> new RuntimeException("SubCategory not found"));
+            Category rootCategory = categoryRepository.findById(subCategory.getIdParent())
+                    .orElseThrow(() -> new RuntimeException("RootCategory not found"));
+            productInfDTOList.add(new ProductInfDTO(rootCategory.getSlug(),subCategory.getSlug(),product));
+        });
+        return new PageResponseDTO(
+                productInfDTOList,
+                productPage.getNumber(),
+                productPage.getTotalPages(),
+                (int) productPage.getTotalElements()
+                );
     }
 }
