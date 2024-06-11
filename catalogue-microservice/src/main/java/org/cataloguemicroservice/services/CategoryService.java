@@ -49,7 +49,7 @@ public class CategoryService implements ICategoryService {
     public void add(Category category) {
         if(category.getCategoryId() == null)
             throw new CategoryEmptyException(CustomerMessageError.CATEGORY_INPUT_IS_EMPTY.getMessage());
-        if( productRepository.existsByProductId(category.getCategoryId()))
+        if( categoryRepository.existsById(category.getCategoryId()))
             throw new CategoryAlreadyExistException(CustomerMessageError.CATEGORY_ALREADY_EXISTS_WITH_ID_EQUALS.getMessage()+category.getCategoryId());
         this.save(category);
     }

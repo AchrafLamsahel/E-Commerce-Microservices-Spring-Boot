@@ -25,7 +25,7 @@ public class OrderMicroserviceApplication {
     public static void main(String[] args) {
         SpringApplication.run(OrderMicroserviceApplication.class, args);
     }
-
+/*
     @Bean
     CommandLineRunner commandLineRunner() {
         return args -> {
@@ -66,4 +66,5 @@ public class OrderMicroserviceApplication {
             orderService.save(order);
         };
     }
+ */
 }

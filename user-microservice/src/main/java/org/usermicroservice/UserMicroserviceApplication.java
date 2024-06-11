@@ -9,6 +9,7 @@ import org.usermicroservice.entities.Role;
 import org.usermicroservice.entities.User;
 import org.usermicroservice.enums.Active;
 import org.usermicroservice.enums.ERole;
+import org.usermicroservice.mappers.UserMapper;
 import org.usermicroservice.repositories.RoleRepository;
 import org.usermicroservice.repositories.UserRepository;
 import org.usermicroservice.services.IUserService;
@@ -48,8 +49,8 @@ public class UserMicroserviceApplication {
                     .build();
 
 
-            userService.registerUser(toUser);
-            userService.registerUser(userOussama);
+            userService.registerUser(UserMapper.userToDto(toUser));
+            userService.registerUser(UserMapper.userToDto(userOussama));
             userService.addRoleToUserByEmail(ERole.ADMIN,"achraflamsahel1@gmail.com");
             User user1 = User.builder()
                     .firstname("John")
@@ -96,11 +97,11 @@ public class UserMicroserviceApplication {
                     .isActive(Active.ACTIVE)
                     .build();
 
-            userService.registerUser(user1);
-            userService.registerUser(user2);
-            userService.registerUser(user3);
-            userService.registerUser(user4);
-            userService.registerUser(user5);
+            userService.registerUser(UserMapper.userToDto(user1));
+            userService.registerUser(UserMapper.userToDto(user2));
+            userService.registerUser(UserMapper.userToDto(user3));
+            userService.registerUser(UserMapper.userToDto(user4));
+            userService.registerUser(UserMapper.userToDto(user5));
 
 
         };

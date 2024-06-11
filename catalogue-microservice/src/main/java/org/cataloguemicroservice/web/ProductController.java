@@ -44,6 +44,7 @@ public class ProductController {
     @PostMapping(value = "/addProduct", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     private void addCategory(@RequestBody Product product) {
         log.info("Add Product");
+
         productService.add(product);
     }
 

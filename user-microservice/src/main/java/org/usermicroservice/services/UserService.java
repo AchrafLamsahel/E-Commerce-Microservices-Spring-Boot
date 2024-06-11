@@ -87,16 +87,16 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void registerUser(User user) throws MessagingException {
-        log.info("Creating new user with email : {}", user.getEmail());
+    public void registerUser(UserDTO userDTO) throws MessagingException {
+        log.info("Creating new user with email : {}", userDTO.getEmail());
         Role userRole = roleRepository.findByRole(ERole.valueOf(ERole.USER.name())).orElseThrow(
                 () -> new RoleNotFoundException(CustomerMessageError.ROLE_NOT_FOUND_WITH_ROLE_EQUALS.getMessage() + ERole.USER.name()));
         User toSave = User.builder()
-                .firstname(user.getFirstname())
-                .lastname(user.getLastname())
-                .numberPhone(user.getNumberPhone())
-                .email(user.getEmail())
-                .password(passwordEncoder.encode(user.getPassword()))
+                .firstname(userDTO.getFirstname())
+                .lastname(userDTO.getLastname())
+                .numberPhone(userDTO.getNumberPhone())
+                .email(userDTO.getEmail())
+                .password(passwordEncoder.encode(userDTO.getPassword()))
                 .roles(List.of(userRole))
                 .isActive(Active.ACTIVE)
                 .isEnabled(false)
@@ -137,7 +137,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void updateUser(Long id, User user) throws MessagingException {
+    public void updateUser(Long id, UserDTO user) throws MessagingException {
         log.info("Updating user with id: {}", id);
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(
@@ -148,7 +148,7 @@ public class UserService implements IUserService {
         existingUser.setPassword(user.getPassword());
         existingUser.setEmail(user.getEmail());
         existingUser.setPassword(user.getPassword());
-        this.registerUser(existingUser);
+        this.registerUser(UserMapper.userToDto(existingUser));
         log.info("User with id {} updated successfully", id);
     }
 
@@ -182,7 +182,7 @@ public class UserService implements IUserService {
             Date expiryDate = calendar.getTime();
             user.setResetPasswordTokenExpiryDate(expiryDate);
             user.setResetPasswordToken(TokenGenerator.generateToken());
-            updateUser(user.getUserId(), user);
+            updateUser(user.getUserId(), UserMapper.userToDto(user));
             UserDTO userDTO = UserMapper.userToDto(user);
             iMailService.sendResetPasswordMail(user.getEmail(),
                     CustomerEmailMessage.RESET_PASSWORD_SUBJECT.getMessage(), userDTO);
@@ -203,7 +203,7 @@ public class UserService implements IUserService {
             appUser.setPassword(passwordEncoder.encode(dto.getNewPassword()));
             appUser.setResetPasswordToken(null);
             appUser.setResetPasswordTokenExpiryDate(null);
-            updateUser(appUser.getUserId(), appUser);
+            updateUser(appUser.getUserId(), UserMapper.userToDto(appUser));
             UserMapper.userToDto(appUser);
         }
     }

@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/register", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public void createUser(@RequestBody User user) throws MessagingException {
+    public void createUser(@RequestBody UserDTO user) throws MessagingException {
         iUserService.registerUser(user);
     }
 
@@ -101,7 +101,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/admin/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public void updateUser(@PathVariable Long id, @RequestBody User user) throws MessagingException {
+    public void updateUser(@PathVariable Long id, @RequestBody UserDTO user) throws MessagingException {
         iUserService.updateUser(id, user);
     }
 

@@ -14,11 +14,11 @@ public interface IUserService {
     PageRequestDTO<User> getUsers(Integer pageNumber, Integer pageSize, String sort);
     List<UserDTO> getAllUsersActive();
     List<UserDTO> getAllUserInActive();
-    void registerUser(User user) throws MessagingException;
+    void registerUser(UserDTO userDto) throws MessagingException;
     UserDTO getUserById(Long id);
     UserDTO getUserByEmail(String email);
     void deleteUserById(Long id);
-    void updateUser(Long id,User user) throws MessagingException;
+    void updateUser(Long id,UserDTO user) throws MessagingException;
     boolean existsByEmail(String email);
     ResponseEntity<String> confirmEmail(String confirmationToken);
     void resetPassword(String email) throws MessagingException;
