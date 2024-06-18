@@ -57,7 +57,7 @@ public class MailService implements IMailService {
                         "<h2>Dear "+ userDTO.getFirstname() + ",</h2>"
                         + "<br/> We have sent you this email in response to your password reset request. " +
                         " <br/> To reset your password, please follow the link below:  "
-                        + "<a href=http://localhost:8085/auth/changer-mot-de-passe?token="+userDTO.getResetPasswordToken()+">Reset Password</a>" +
+                        + "<a href=http://localhost:4200/change-password?token="+userDTO.getResetPasswordToken()+">Reset Password</a>" +
                         "<br/> Regards,<br/>" +
                         "E-Commerce Registration Team" +
                         "</body>" +
@@ -68,7 +68,7 @@ public class MailService implements IMailService {
     }
 
     private String generateResetPasswordLink(String token){
-        return "<a href=http://localhost:8085/users/changer-mot-de-passe?token="+token+">Reset Password</a>";
+        return "<a href=http://http://localhost:4200/change-password?token="+token+">Reset Password</a>";
     }
 
 }

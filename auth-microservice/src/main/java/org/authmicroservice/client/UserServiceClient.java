@@ -24,8 +24,8 @@ public interface UserServiceClient {
     @GetMapping(value = "/users/confirm-account", produces = "application/json")
     ResponseEntity<String> confirmUserAccount(@RequestParam("token") String confirmationToken);
 
-    @PostMapping("/users/recuperer-mot-de-passe")
-    ResponseEntity<String> handleResetPassword(@RequestParam("email") String email) throws MessagingException;
+    @PostMapping("/users/reset-password")
+    ResponseEntity<String> handleResetPassword(@RequestBody String email) throws MessagingException;
 
     @PostMapping("/users/changer-mot-de-passe")
     ResponseEntity<String> handleChangePassword(@RequestBody ChangePasswordDTO changePasswordDTO);

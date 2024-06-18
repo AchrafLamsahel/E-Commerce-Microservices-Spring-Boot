@@ -25,7 +25,8 @@ public class SecurityConfig   {
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(expressionInterceptUrlRegistry ->
-                        expressionInterceptUrlRegistry.requestMatchers("/auth/**").permitAll())
+                        expressionInterceptUrlRegistry.requestMatchers("/auth/**").permitAll()
+                                .requestMatchers("/auth/reset-password").permitAll())
                 .build();
     }
 

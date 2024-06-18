@@ -1,5 +1,8 @@
 package org.authmicroservice.web;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.authmicroservice.dto.*;
@@ -25,16 +28,32 @@ public class AuthController {
         return authService.confirmEmail(confirmationToken);
     }
 
-    @PostMapping(value = "/recuperer-mot-de-passe", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<?> handleResetPassword(@RequestParam("email") String email) throws MessagingException {
-        return authService.handleResetPassword(email);
+    /**
+     * Endpoint to handle password reset request.
+     * @param email The email address of the user requesting the password reset.
+     * @return ResponseEntity indicating the result of the password reset request.
+     * @throws MessagingException If there is an error sending the reset email.
+     */
+
+    @PostMapping(value = "/reset-password", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<?> handleResetPassword(@RequestBody String email) throws MessagingException, JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode emailNode = mapper.readTree(email);
+        String test = emailNode.get("email").asText();
+        return authService.handleResetPassword(test);
     }
 
-    @PostMapping(value = "/changer-mot-de-passe", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<?> handleChangePassword(@RequestParam("token") String token, @RequestBody ChangePasswordDTO changePasswordDTO) {
-        changePasswordDTO.setToken(token);
+    /**
+     * Endpoint to handle password change request.
+     * @param token The token received by the user for password reset.
+     * @param changePasswordDTO The DTO containing the new password and the token.
+     * @return ResponseEntity indicating the result of the password change.
+     */
+
+    @PostMapping(value = "/change-password", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<?> handleChangePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
         authService.handleChangePassword(changePasswordDTO);
-        return ResponseEntity.ok("Le mot de passe a été changé avec succès");
+        return ResponseEntity.ok("Password changed successfully");
     }
 
 }

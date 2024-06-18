@@ -75,8 +75,8 @@ public class UserController {
         return iUserService.confirmEmail(confirmationToken);
     }
 
-    @PostMapping(value = "/recuperer-mot-de-passe", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<String> handleResetPassword(@RequestParam("email") String email) throws MessagingException {
+    @PostMapping(value = "/reset-password", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<String> handleResetPassword(@RequestBody String email) throws MessagingException {
         iUserService.resetPassword(email);
         return ResponseEntity.ok("Un email de réinitialisation a été envoyé à " + email);
     }

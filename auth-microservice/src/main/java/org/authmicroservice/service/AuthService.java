@@ -23,15 +23,15 @@ public class AuthService implements IAuthService {
     private final PasswordEncoder passwordEncoder;
 
     public LoginResponseDTO login(LoginRequestDTO request) {
-        UserDTO userDTO = userServiceClient.getUserByEmail(request.getEmail()).getBody();
+        UserDTO userDTO = userServiceClient.getUserByEmail(request.getEmail().toLowerCase()).getBody();
         if (userDTO != null && passwordEncoder.matches(request.getPassword(), userDTO.getPassword())) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication.isAuthenticated()) {
                 return LoginResponseDTO.builder()
                         .email(userDTO.getEmail())
-                        .accessToken(jwtService.generateToken(request.getEmail()))
-                        .refreshToken(jwtService.generateToken(request.getEmail()))
-                        .roles(jwtService.getRoles(request.getEmail()))
+                        .accessToken(jwtService.generateToken(request.getEmail().toLowerCase()))
+                        .refreshToken(jwtService.generateToken(request.getEmail().toLowerCase()))
+                        .roles(jwtService.getRoles(request.getEmail().toLowerCase()))
                         .build();
             } else {
                 throw new EmailOrPasswordIncorrectException("User is not Authenticated");
@@ -73,7 +73,7 @@ public class AuthService implements IAuthService {
 
     @Override
     public ResponseEntity<String> handleResetPassword(String email) throws MessagingException {
-        return userServiceClient.handleResetPassword(email);
+        return userServiceClient.handleResetPassword(email.toLowerCase());
     }
 
     @Override

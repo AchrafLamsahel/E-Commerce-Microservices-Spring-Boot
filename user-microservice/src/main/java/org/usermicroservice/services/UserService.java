@@ -148,7 +148,8 @@ public class UserService implements IUserService {
         existingUser.setPassword(user.getPassword());
         existingUser.setEmail(user.getEmail());
         existingUser.setPassword(user.getPassword());
-        this.registerUser(UserMapper.userToDto(existingUser));
+        userRepository.save(existingUser);
+        //this.registerUser(UserMapper.userToDto(existingUser));
         log.info("User with id {} updated successfully", id);
     }
 
@@ -175,7 +176,7 @@ public class UserService implements IUserService {
         log.info("Reset Password  ");
         if (email == null) throw new
                 DataNotValidException(CustomerMessageError.EMAIL_IS_REQUIRED.getMessage());
-        User user = userRepository.findByEmail(email.toLowerCase()).orElse(null);
+        User user = userRepository.findByEmail(email.toLowerCase()).orElseThrow(null);
         if (user != null && user.getVerifiedAt() != null && user.isEnabled()) {
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.HOUR_OF_DAY, 24);
